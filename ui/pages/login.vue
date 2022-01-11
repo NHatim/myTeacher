@@ -24,7 +24,6 @@ export default {
    align-items: center;
    justify-content: center;
    min-height: 100vh;
-   background
    background-color: #eee;
 }
 </style>
