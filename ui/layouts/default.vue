@@ -65,6 +65,11 @@ export default {
           title: 'Enregistrez-vous',
           to: '/register',
         },
+                {
+          icon: 'mdi-login',
+          title: 'Login',
+          to: '/login',
+        },
       ],
       miniVariant: false,
       right: true,
