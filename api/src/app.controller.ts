@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Request, Response } from 'express';
 
 @Controller()
 export class AppController {
@@ -11,8 +12,15 @@ export class AppController {
     return this.appService.getMembers();
   }
 
+  @Get('/members/finduser')
+  getMember(@Query() member: any)  {
+    console.log("Query",member)
+    return this.appService.getMember(member);
+  }
+
   @Post('/members')
   postMembers(@Body() member:any) {
+
     return this.appService.postMembers(member);
   }
 }

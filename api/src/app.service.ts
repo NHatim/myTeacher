@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@astrajs/collections';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';;
 const bcrypt = require('bcryptjs');
 
 @Injectable()
@@ -19,9 +20,23 @@ export class AppService {
     return collection.find({})
   }
 
+  async getMember(member:any) {
+    const client = await this.getClient();
+    const collection = client.namespace('mydb').collection('members');
+    const response = await collection.findOne({email:{$eq:member.email}});
+    if(bcrypt.compareSync(member.password,response.password)){
+      return "Password Match"
+    }
+    else{
+      return "Password Don't Match"
+    }
+  }
+
   async postMembers(member:any) {
     const client = await this.getClient();
     const collection = client.namespace('mydb').collection('members');
+    const findEmail = await collection.findOne({email:{$eq:member.email}});
+    if(!findEmail){
     const result = await collection.create({      
       firstName : member.firstName,
       lastName : member.lastName,
@@ -31,10 +46,14 @@ export class AppService {
       address : member.address,
       city : member.city,
       category: member.radios,
-    });
+    
+    })
     return{
       id : result.documentId,
       ...member
     }
+  
+    }
+   
   }
 }

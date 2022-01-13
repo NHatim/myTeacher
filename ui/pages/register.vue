@@ -152,14 +152,9 @@ export default {
     }
   },
   methods: {
-    async save(e) {
+    save(e) {
       e.preventDefault()
-      await fetch('http://localhost:3001/members', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const user = {
           firstname: this.firstname,
           lastname: this.lastname,
           email: this.email,
@@ -168,16 +163,20 @@ export default {
           address: this.address,
           city: this.city,
           radios: this.radios,
-        }),
-      }).then((res) => {
-        if (res.status === 201) {
-          this.savingSuccessful = true
-          setTimeout(() => {
-            this.$router.push('/login')
-          }, 3000)
-        } else {
-          alert(res.message)
-        }
+      }
+      this.$axios.$post('http://localhost:3001/members', user)
+      .then(response => {
+        alert(response)
+        this.text = 'Vous avez réussi à vous enregistrer !'
+        this.savingSuccessful = true
+        setTimeout(() => {
+          this.$router.push('/login')
+        }, 2000)
+
+      }).catch(error => {
+        alert(error)
+        this.text = 'Une erreur est survenue lors de l\'enregistrement'
+        this.savingSuccessful = false
       })
     },
   },

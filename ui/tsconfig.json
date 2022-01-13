@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+
     "target": "ES2018",
     "module": "ESNext",
     "moduleResolution": "Node",
@@ -15,7 +16,7 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": ["@nuxt/types", "@nuxtjs/axios", "@types/node"]
+    "types": ["@nuxt/types", "@nuxtjs/axios", "@types/node", "@nuxtjs/auth-next"]
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }
