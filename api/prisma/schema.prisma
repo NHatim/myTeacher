@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,12 +13,12 @@ model Student {
   email             String              @unique
   firstName         String
   lastName          String
-  birthDay          DateTime
+  birthDay          String
   address           String
   phone             String
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  interests         String?
+  interests         String[]
   course            Course[]
   ReservationCourse ReservationCourse[]
 }
@@ -32,8 +29,8 @@ model Category {
   description       String
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  Course            Course[]
   CategoriesOnPosts CategoriesOnPosts[]
+  Course            Course[]
 }
 
 model Teacher {
@@ -46,10 +43,10 @@ model Teacher {
   phone          String
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  interests      String?
-  course         Course[]
-  Organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  interests      String[]
   organisationId Int?
+  Organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  course         Course[]
 }
 
 model Course {
@@ -57,22 +54,22 @@ model Course {
   title             String
   content           String?
   published         Boolean?            @default(false)
-  author            Teacher             @relation(fields: [authorId], references: [id])
   authorId          Int
-  category          Category[]
-  Student           Student?            @relation(fields: [studentId], references: [id])
   studentId         Int?
+  author            Teacher             @relation(fields: [authorId], references: [id])
+  Student           Student?            @relation(fields: [studentId], references: [id])
   CategoriesOnPosts CategoriesOnPosts[]
   ReservationCourse ReservationCourse[]
+  category          Category[]
 }
 
 model CategoriesOnPosts {
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   Int // relation scalar field (used in the `@relation` attribute above)
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  courseId   Int
+  categoryId Int
   assignedAt DateTime @default(now())
   assignedBy String
+  category   Category @relation(fields: [categoryId], references: [id])
+  course     Course   @relation(fields: [courseId], references: [id])
 
   @@id([courseId, categoryId])
 }
@@ -97,29 +94,28 @@ model Promotion {
 }
 
 model Payment {
-  id                Int                 @id @default(autoincrement())
-  status            Status              @default(PENDING)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  id                Int                @id @default(autoincrement())
+  status            Status             @default(PENDING)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
   ReservationCourse ReservationCourse?
 }
 
 model ReservationCourse {
   id        Int      @id @default(autoincrement())
-  payment   Payment  @relation(fields: [paymentId], references: [id])
-  paymentId Int
-  course    Course   @relation(fields: [courseId], references: [id])
+  paymentId Int      @unique
   courseId  Int
-  student   Student  @relation(fields: [studentId], references: [id])
   studentId Int
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id])
+  payment   Payment  @relation(fields: [paymentId], references: [id])
+  student   Student  @relation(fields: [studentId], references: [id])
 }
 
 enum Status {
   SUCCESS
   FAILED
   PENDING
-  PROGESS
 }

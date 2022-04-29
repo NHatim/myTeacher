@@ -7,7 +7,11 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 export class StudentsService {
   constructor(private prisma: PrismaService) {}
   create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+    return this.prisma.student.create({
+      data: {
+        ...createStudentDto,
+      },
+    });
   }
 
   findAll() {
@@ -19,7 +23,12 @@ export class StudentsService {
   }
 
   update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+    return this.prisma.student.update({
+      where: { id },
+      data: {
+        ...updateStudentDto,
+      },
+    });
   }
 
   remove(id: number) {

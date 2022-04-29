@@ -7,12 +7,12 @@ CREATE TABLE "Student" (
     "email" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
-    "birthDay" TIMESTAMP(3) NOT NULL,
+    "birthDay" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "interests" TEXT,
+    "interests" TEXT[],
 
     CONSTRAINT "Student_pkey" PRIMARY KEY ("id")
 );
@@ -39,7 +39,7 @@ CREATE TABLE "Teacher" (
     "phone" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "interests" TEXT,
+    "interests" TEXT[],
     "organisationId" INTEGER,
 
     CONSTRAINT "Teacher_pkey" PRIMARY KEY ("id")
