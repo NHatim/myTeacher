@@ -29,7 +29,7 @@ model Category {
   description       String
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
-  CategoriesOnPosts CategoriesOnPosts[]
+  CategoriesOnPosts CategoriesOnCourses[]
   Course            Course[]
 }
 
@@ -58,12 +58,12 @@ model Course {
   studentId         Int?
   author            Teacher             @relation(fields: [authorId], references: [id])
   Student           Student?            @relation(fields: [studentId], references: [id])
-  CategoriesOnPosts CategoriesOnPosts[]
+  CategoriesOnCourses CategoriesOnCourses[]
   ReservationCourse ReservationCourse[]
   category          Category[]
 }
 
-model CategoriesOnPosts {
+model CategoriesOnCourses {
   courseId   Int
   categoryId Int
   assignedAt DateTime @default(now())
