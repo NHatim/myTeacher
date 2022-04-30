@@ -5,6 +5,7 @@ CREATE TYPE "Status" AS ENUM ('SUCCESS', 'FAILED', 'PENDING');
 CREATE TABLE "Student" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "birthDay" TEXT NOT NULL,
@@ -32,6 +33,7 @@ CREATE TABLE "Category" (
 CREATE TABLE "Teacher" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "birthDay" TIMESTAMP(3) NOT NULL,
@@ -58,13 +60,13 @@ CREATE TABLE "Course" (
 );
 
 -- CreateTable
-CREATE TABLE "CategoriesOnPosts" (
+CREATE TABLE "CategoriesOnCourses" (
     "courseId" INTEGER NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "assignedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "assignedBy" TEXT NOT NULL,
 
-    CONSTRAINT "CategoriesOnPosts_pkey" PRIMARY KEY ("courseId","categoryId")
+    CONSTRAINT "CategoriesOnCourses_pkey" PRIMARY KEY ("courseId","categoryId")
 );
 
 -- CreateTable
@@ -145,10 +147,10 @@ ALTER TABLE "Course" ADD CONSTRAINT "Course_studentId_fkey" FOREIGN KEY ("studen
 ALTER TABLE "Course" ADD CONSTRAINT "Course_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "Teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CategoriesOnPosts" ADD CONSTRAINT "CategoriesOnPosts_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "CategoriesOnCourses" ADD CONSTRAINT "CategoriesOnCourses_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CategoriesOnPosts" ADD CONSTRAINT "CategoriesOnPosts_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "CategoriesOnCourses" ADD CONSTRAINT "CategoriesOnCourses_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ReservationCourse" ADD CONSTRAINT "ReservationCourse_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

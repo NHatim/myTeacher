@@ -8,9 +8,19 @@ import { OrganizationModule } from './organization/organization.module';
 import { CategoryModule } from './category/category.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { ReservationCourseModule } from './reservation_course/reservation_course.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [StudentsModule, CoursesModule, TeacherModule, OrganizationModule, CategoryModule, PromotionModule, ReservationCourseModule],
+  imports: [
+    StudentsModule,
+    CoursesModule,
+    TeacherModule,
+    OrganizationModule,
+    CategoryModule,
+    PromotionModule,
+    ReservationCourseModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
