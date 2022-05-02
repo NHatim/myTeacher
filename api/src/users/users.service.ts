@@ -14,11 +14,14 @@ export class UsersService {
       });
       if (user !== null) throw new ConflictException('Email already exists');
       const saltOrRounds = 10;
-      const password = 'blabla'
-      const hash = await bcrypt.hash(password, saltOrRounds);
+      const hashedPassword = await bcrypt.hash(
+        createUserDto.password,
+        saltOrRounds,
+      );
       return this.prisma.user.create({
         data: {
           ...createUserDto,
+          password: hashedPassword,
         },
       });
     }
@@ -44,6 +47,10 @@ export class UsersService {
   }
 
   findOne(id: number) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  findRole(id: number) {
     return this.prisma.user.findUnique({ where: { id } });
   }
 

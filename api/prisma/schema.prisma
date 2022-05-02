@@ -25,7 +25,7 @@ model User {
   Organisation      Organisation?       @relation(fields: [organisationId], references: [id])
   ReservationCourse ReservationCourse[]
   Course            Course[]
-  UserRole          UserRole[]
+  role              Role                @default(STUDENT)
 }
 
 model Category {
@@ -95,7 +95,7 @@ model ReservationCourse {
   id        Int      @id @default(autoincrement())
   paymentId Int      @unique
   courseId  Int
-  userId Int
+  userId    Int
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,31 +104,13 @@ model ReservationCourse {
   user      User     @relation(fields: [userId], references: [id])
 }
 
-model Role {
-  id        Int        @id @default(autoincrement())
-  name      RoleName   @default(STUDENT)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  UserRole  UserRole[]
-}
-
-model UserRole {
-  userId Int
-  roleId Int
-  role   Role @relation(fields: [roleId], references: [id])
-  user   User @relation(fields: [userId], references: [id])
-
-  @@id([userId, roleId])
-}
-
 enum Status {
   SUCCESS
   FAILED
   PENDING
 }
 
-enum RoleName {
-  ADMIN
+enum Role {
   TEACHER
   STUDENT
 }

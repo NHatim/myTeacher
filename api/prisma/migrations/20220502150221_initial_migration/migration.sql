@@ -2,7 +2,7 @@
 CREATE TYPE "Status" AS ENUM ('SUCCESS', 'FAILED', 'PENDING');
 
 -- CreateEnum
-CREATE TYPE "RoleName" AS ENUM ('ADMIN', 'TEACHER', 'STUDENT');
+CREATE TYPE "Role" AS ENUM ('TEACHER', 'STUDENT');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -19,6 +19,7 @@ CREATE TABLE "User" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "interests" TEXT[],
     "organisationId" INTEGER,
+    "role" "Role" NOT NULL DEFAULT E'STUDENT',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -106,24 +107,6 @@ CREATE TABLE "ReservationCourse" (
 );
 
 -- CreateTable
-CREATE TABLE "Role" (
-    "id" SERIAL NOT NULL,
-    "name" "RoleName" NOT NULL DEFAULT E'STUDENT',
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Role_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "UserRole" (
-    "userId" INTEGER NOT NULL,
-    "roleId" INTEGER NOT NULL,
-
-    CONSTRAINT "UserRole_pkey" PRIMARY KEY ("userId","roleId")
-);
-
--- CreateTable
 CREATE TABLE "_CategoryToCourse" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
@@ -161,12 +144,6 @@ ALTER TABLE "ReservationCourse" ADD CONSTRAINT "ReservationCourse_courseId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "ReservationCourse" ADD CONSTRAINT "ReservationCourse_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserRole" ADD CONSTRAINT "UserRole_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserRole" ADD CONSTRAINT "UserRole_roleId_fkey" FOREIGN KEY ("roleId") REFERENCES "Role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_CategoryToCourse" ADD CONSTRAINT "_CategoryToCourse_A_fkey" FOREIGN KEY ("A") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
