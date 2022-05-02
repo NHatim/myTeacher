@@ -1,24 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { StudentsService } from '../students/students.service';
 import { JwtService } from '@nestjs/jwt';
-import { TeacherService } from 'src/teacher/teacher.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private studentService: StudentsService,
-    private teacherService: TeacherService,
+    private userService: UsersService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const userStudent = await this.studentService.findOneByEmail(username);
-    const userTeacher = await this.teacherService.findOneByEmail(username);
-    if (userStudent && userStudent.password === pass) {
-      const { password, ...result } = userStudent;
-      return result;
-    } else if (userTeacher && userTeacher.password === pass) {
-      const { password, ...result } = userTeacher;
+    const user = await this.userService.findOneByEmail(username);
+    if (user && user.password === pass) {
+      const { password, ...result } = user;
       return result;
     }
     return null;
