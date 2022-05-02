@@ -6,19 +6,17 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 @Injectable()
 export class StudentsService {
   constructor(private prisma: PrismaService) {}
-  create(createStudentDto: CreateStudentDto) {
-    if (
-      !this.prisma.student.findUnique({
+  async create(createStudentDto: CreateStudentDto) {
+    {
+      const student = await this.prisma.student.findUnique({
         where: { email: createStudentDto.email },
-      })
-    ) {
+      });
+      if (student !== null) throw new ConflictException('Email already exists');
       return this.prisma.student.create({
         data: {
           ...createStudentDto,
         },
       });
-    } else {
-      throw new ConflictException('User already exists');
     }
   }
 
