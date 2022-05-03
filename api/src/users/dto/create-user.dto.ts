@@ -27,6 +27,12 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
+  role: 'TEACHER' | 'STUDENT';
+
+  @IsString()
+  @IsNotEmpty()
   phone: string;
+
+  @IsString()
   interests: string[];
 }

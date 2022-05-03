@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Injectable()
 export class CoursesService {
+  constructor(private prisma: PrismaService) {}
   create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+    return this.prisma.course.create({
+      data: {
+        ...createCourseDto,
+      },
+    });
   }
 
   findAll() {

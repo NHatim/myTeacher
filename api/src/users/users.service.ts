@@ -50,10 +50,6 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  findRole(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
-  }
-
   findOneByEmail(email: string) {
     return this.prisma.user.findUnique({ where: { email } });
   }

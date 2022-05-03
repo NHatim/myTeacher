@@ -25,7 +25,7 @@ model User {
   Organisation      Organisation?       @relation(fields: [organisationId], references: [id])
   ReservationCourse ReservationCourse[]
   Course            Course[]
-  role              Role                @default(STUDENT)
+  role              Role               
 }
 
 model Category {
@@ -41,8 +41,11 @@ model Category {
 model Course {
   id                  Int                   @id @default(autoincrement())
   title               String
-  date                String
-  content             String?
+  startDate           DateTime
+  date                DateTime
+  price               Float
+  place               String
+  image               String?
   description         String
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
