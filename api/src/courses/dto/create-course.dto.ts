@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsDate, IsNotEmpty } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, IsDateString } from 'class-validator';
 export class CreateCourseDto {
   @IsString()
   @IsNotEmpty()
@@ -23,11 +23,13 @@ export class CreateCourseDto {
   @IsNotEmpty()
   place: string;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
-  startDate: Date;
+  startDate: string;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
-  date: Date;
+  date: string;
+  @IsNotEmpty()
+  categories: number;
 }

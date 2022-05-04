@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { IsEmail, IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -26,6 +26,7 @@ export class CreateUserDto {
   address: string;
 
   @IsString()
+  @IsIn(['TEACHER', 'STUDENT'])
   @IsNotEmpty()
   role: 'TEACHER' | 'STUDENT';
 
