@@ -15,7 +15,7 @@ export class OrganisationService {
   }
 
   findAll() {
-    return `This action returns all organisation`;
+    return this.prisma.organisation.findMany();
   }
 
   findOne(id: number) {
