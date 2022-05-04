@@ -8,7 +8,9 @@ import { ReservationCourseModule } from './reservation_course/reservation_course
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { OrganisationModule } from './organisation/organisation.module';
-
+import { StripeModule } from './stripe/stripe.module';
+import * as dotenv from 'dotenv';
+dotenv.config({ path: __dirname + '../.env' });
 @Module({
   imports: [
     CoursesModule,
@@ -18,6 +20,7 @@ import { OrganisationModule } from './organisation/organisation.module';
     AuthModule,
     UsersModule,
     OrganisationModule,
+    StripeModule.forRoot(process.env.STRIPE_KEY, { apiVersion: '2020-08-27' }),
   ],
   controllers: [AppController],
   providers: [AppService],

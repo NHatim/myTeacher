@@ -32,4 +32,5 @@ export class CreateCourseDto {
   date: string;
   @IsNotEmpty()
   categories: number;
+  id: any;
 }
