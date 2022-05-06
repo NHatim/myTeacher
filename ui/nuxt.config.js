@@ -32,22 +32,51 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/fontawesome',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
 
   ],
   auth: {
     // Options
+
+    strategies: {
+      local: {
+        token: {
+          property: "token"
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: "user"
+          // autoFetch: true
+        },
+        endpoints: {
+          login: { url: "/api/auth", method: "post" },
+          logout: { url: "/api/logout", method: "post" },
+          user: { url: "/profile", method: "get" }
+        }
+      }
+    },
+    redirect: {
+      login: "/",
+      logout: "/",
+      home: "/private"
+    }
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+  },
+
+  router: {
+    middleware: ['auth']
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -69,6 +98,12 @@ export default {
     },
   },
 
+  fontawesome: {
+    icons:{
+     solid:true,
+     brands:true,
+    }
+   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 }

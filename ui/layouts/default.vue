@@ -8,18 +8,30 @@
       app
     >
       <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
+        <v-list-item router exact to="/">
           <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
+            <v-icon>{{ items[0].icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
+            <v-list-item-title v-text="items[0].title" />
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item router exact to="/register">
+          <v-list-item-action>
+            <v-icon>{{ items[1].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[1].title" />
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item router exact to="/login">
+          <v-list-item-action>
+            <v-icon>{{ items[2].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[2].title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -34,11 +46,10 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <font-awesome-icon :icon="['fas', 'fa-cart-shopping']" />
     </v-app-bar>
     <v-main>
-      <v-container>
-        <Nuxt />
-      </v-container>
+      <Nuxt />
     </v-main>
     <v-footer :absolute="!fixed" app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
@@ -65,7 +76,7 @@ export default {
           title: 'Enregistrez-vous',
           to: '/register',
         },
-                {
+        {
           icon: 'mdi-login',
           title: 'Login',
           to: '/login',
