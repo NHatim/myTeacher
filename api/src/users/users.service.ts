@@ -50,8 +50,13 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  findOneByEmail(email: string) {
-    return this.prisma.user.findUnique({ where: { email } });
+  async findOneByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      include: { ReservationCourse: true },
+    });
+    if (user === null) throw new ConflictException('Email does not exist');
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

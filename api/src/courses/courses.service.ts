@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+
 import { PrismaService } from 'src/prisma.service';
 import { STRIPE_CLIENT } from 'src/stripe/constants';
 import Stripe from 'stripe';
@@ -15,22 +16,34 @@ export class CoursesService {
   async create(createCourseDto: CreateCourseDto) {
     const foundAuthor = this.prisma.user.findUnique({
       where: {
-        id: createCourseDto.authorId,
+        id: Number(createCourseDto.authorId),
       },
     });
     if (!foundAuthor) {
       return null;
     }
+    if (!createCourseDto.image) {
+      createCourseDto.image = './uploads/images/no-img.png';
+    }
+
+    if (
+      createCourseDto.price < 0 ||
+      createCourseDto.places < 0 ||
+      createCourseDto.places > 100
+    ) {
+      throw new Error('Invalid price or places');
+    }
     const createdCourse = await this.prisma.course.create({
       data: {
-        ...createCourseDto,
-        categories: {
-          connect: [
-            {
-              id: createCourseDto.categories,
-            },
-          ],
-        },
+        authorId: Number(createCourseDto.authorId),
+        title: createCourseDto.title,
+        description: createCourseDto.description,
+        price: Number(createCourseDto.price),
+        address: createCourseDto.address,
+        places: Number(createCourseDto.places),
+        startDate: createCourseDto.startDate,
+        categoryId: Number(createCourseDto.categoryId),
+        image: createCourseDto.image,
       },
     });
     await this.stripe.products.create({
@@ -41,7 +54,7 @@ export class CoursesService {
     });
     return this.stripe.prices.create({
       product: createdCourse.id.toString(),
-      unit_amount: createdCourse.price,
+      unit_amount: Number(Math.round(createdCourse.price * 100)),
       currency: 'eur',
     });
   }
@@ -49,7 +62,7 @@ export class CoursesService {
   async findAll() {
     return this.prisma.course.findMany({
       include: {
-        categories: true,
+        category: true,
       },
     });
   }

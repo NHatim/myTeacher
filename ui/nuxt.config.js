@@ -48,7 +48,7 @@ export default {
     strategies: {
       local: {
         token: {
-          property: "token"
+          property: "token",
           // required: true,
           // type: 'Bearer'
         },
@@ -57,8 +57,8 @@ export default {
           // autoFetch: true
         },
         endpoints: {
-          login: { url: "/api/auth", method: "post" },
-          logout: { url: "/api/logout", method: "post" },
+          login: { url: "/auth/login", method: "post" },
+          logout: { url: "/auth/logout", method: "post" },
           user: { url: "/profile", method: "get" }
         }
       }
@@ -66,7 +66,7 @@ export default {
     redirect: {
       login: "/",
       logout: "/",
-      home: "/private"
+      home: "/"
     }
   },
 
@@ -78,6 +78,9 @@ export default {
   router: {
     middleware: ['auth']
   },
+
+
+
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {

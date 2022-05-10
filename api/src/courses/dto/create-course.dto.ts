@@ -1,36 +1,45 @@
-import { IsString, IsNumber, IsNotEmpty, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsDateString,
+  IsInt,
+  Min,
+  IsNumber,
+} from 'class-validator';
+import {
+  FileSystemStoredFile,
+  HasMimeType,
+  IsFiles,
+  MaxFileSize,
+} from 'nestjs-form-data';
 export class CreateCourseDto {
   @IsString()
   @IsNotEmpty()
   title: string;
 
-  @IsString()
   @IsNotEmpty()
-  image: string;
-
-  @IsNumber()
   authorId: number;
 
   @IsString()
   @IsNotEmpty()
   description: string;
 
-  @IsNumber()
   @IsNotEmpty()
   price: number;
 
   @IsString()
   @IsNotEmpty()
-  place: string;
+  address: string;
+
+  @IsNotEmpty()
+  places: number;
 
   @IsDateString()
   @IsNotEmpty()
   startDate: string;
 
-  @IsDateString()
   @IsNotEmpty()
-  date: string;
-  @IsNotEmpty()
-  categories: number;
-  id: any;
+  categoryId: number;
+
+  image: any;
 }

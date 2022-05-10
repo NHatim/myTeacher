@@ -25,30 +25,31 @@ model User {
   Organisation      Organisation?       @relation(fields: [organisationId], references: [id])
   ReservationCourse ReservationCourse[]
   Course            Course[]
-  role              Role               
+  role              Role
 }
 
 model Category {
-  id                Int                   @id @default(autoincrement())
-  name              String
+  id      Int      @id @default(autoincrement())
+  name    String
   courses Course[]
 }
 
 model Course {
-  id                  Int                   @id @default(autoincrement())
-  title               String
-  startDate           String
-  date                String
-  price               Float
-  place               String
-  image               String?
-  description         String
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  authorId            Int
-  author              User?                 @relation(fields: [authorId], references: [id])
-  categories Category[]
-  ReservationCourse   ReservationCourse[]
+  id                Int                 @id @default(autoincrement())
+  title             String
+  startDate         String
+  price             Float
+  address           String
+  places            Int
+  image            String
+  description       String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  authorId          Int
+  author            User?               @relation(fields: [authorId], references: [id])
+  categoryId        Int
+  category          Category?           @relation(fields: [categoryId], references: [id])
+  ReservationCourse ReservationCourse[]
 }
 
 model Organisation {

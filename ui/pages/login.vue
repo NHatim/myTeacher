@@ -43,6 +43,7 @@
 
 <script>
 export default {
+  middleware: 'auth',
   data() {
     return {
       username: '',
@@ -55,14 +56,25 @@ export default {
         const response = await this.$auth.loginWith('local', {
           data: { username: this.username, password: this.password },
         })
-        this.$auth.$storage.setState("token", response.data.access_token)
-        this.$auth.$storage.setLocalStorage("token", response.data.access_token)
-        this.$router.push('/')
-
+        this.$auth.loginWith('local', {
+          data: { username: this.username, password: this.password },
+        })
+        this.$auth.$storage.setState('token', response.data.access_token)
+        this.$auth.$storage.setLocalStorage('token', response.data.access_token)
+        const profile = await this.$axios.get('/profile', {
+          headers: { Authorization: 'Bearer ' + response.data.access_token },
+        })
+        const user = await this.$axios.get(`/users/${profile.data.username}`, {
+          headers: { Authorization: 'Bearer ' + response.data.access_token },
+        })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, createdAt, updatedAt, ...userWithoutPassword } =
+          user.data
+        this.$auth.$storage.setUniversal('profile', userWithoutPassword)
+        window.location.replace('/')
       } catch (err) {
         console.log(err)
       }
-
     },
   },
 }

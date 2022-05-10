@@ -37,14 +37,15 @@ CREATE TABLE "Course" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "startDate" TEXT NOT NULL,
-    "date" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
-    "place" TEXT NOT NULL,
-    "image" TEXT,
+    "address" TEXT NOT NULL,
+    "places" INTEGER NOT NULL,
+    "image" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "authorId" INTEGER NOT NULL,
+    "categoryId" INTEGER NOT NULL,
 
     CONSTRAINT "Course_pkey" PRIMARY KEY ("id")
 );
@@ -96,29 +97,20 @@ CREATE TABLE "ReservationCourse" (
     CONSTRAINT "ReservationCourse_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "_CategoryToCourse" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ReservationCourse_paymentId_key" ON "ReservationCourse"("paymentId");
 
--- CreateIndex
-CREATE UNIQUE INDEX "_CategoryToCourse_AB_unique" ON "_CategoryToCourse"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_CategoryToCourse_B_index" ON "_CategoryToCourse"("B");
-
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "Organisation"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Course" ADD CONSTRAINT "Course_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Course" ADD CONSTRAINT "Course_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ReservationCourse" ADD CONSTRAINT "ReservationCourse_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -128,9 +120,3 @@ ALTER TABLE "ReservationCourse" ADD CONSTRAINT "ReservationCourse_courseId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "ReservationCourse" ADD CONSTRAINT "ReservationCourse_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CategoryToCourse" ADD CONSTRAINT "_CategoryToCourse_A_fkey" FOREIGN KEY ("A") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CategoryToCourse" ADD CONSTRAINT "_CategoryToCourse_B_fkey" FOREIGN KEY ("B") REFERENCES "Course"("id") ON DELETE CASCADE ON UPDATE CASCADE;

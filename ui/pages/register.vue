@@ -117,7 +117,9 @@
   </div>
 </template>
 <script>
+
 export default {
+  auth : 'guest',
   data() {
     return {
       emailRules: [

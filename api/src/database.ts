@@ -5,22 +5,22 @@ async function createCategory() {
   const category = await prisma.category.createMany({
     data: [
       {
-        name: 'MATH',
+        name: 'Maths',
       },
       {
-        name: 'PROGRAMMING',
+        name: 'Programmation',
       },
       {
-        name: 'PHYSICS',
+        name: 'Physique',
       },
       {
-        name: 'ART',
+        name: 'Art',
       },
       {
-        name: 'MUSIC',
+        name: 'Musique',
       },
       {
-        name: 'ACCOUNTING',
+        name: 'Comptabilité',
       },
     ],
   });
