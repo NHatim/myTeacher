@@ -54,6 +54,7 @@ export class CoursesController {
     @UploadedFile() image: Express.Multer.File,
     @Body() createCourseDto: CreateCourseDto,
   ) {
+    createCourseDto.image = image.path;
     return this.coursesService.create(createCourseDto);
   }
 

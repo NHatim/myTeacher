@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="form">
     <h1>Formulaire de création de cours</h1>
     <v-form>
       <v-container>
@@ -56,18 +56,33 @@
               v-model="places"
               label="Nombre de places disponibles"
               thumb-label="always"
+              class="v-slider"
               max="20"
               min="1"
             ></v-slider>
           </v-col>
           <v-col cols="12" md="4">
+            <v-card-title>
+              <v-icon large left> mdi-calendar-month </v-icon>
+              <span class="text-h6 font-weight-light"
+                >Date de début du cours</span
+              >
+            </v-card-title>
             <v-date-picker
               v-model="startDate"
               label="Date de début"
               required
+              title="Date de début"
+              locale="fr"
             ></v-date-picker>
           </v-col>
           <v-col cols="12" md="4">
+                        <v-card-title>
+              <v-icon large left> mdi-file-image </v-icon>
+              <span class="text-h6 font-weight-light"
+                >Image pour le cours</span
+              >
+            </v-card-title>
             <client-only>
               <v-file-input
                 v-model="image"
@@ -106,7 +121,7 @@
               color="primary"
               elevation="5"
               large
-              class="mr-4"
+              class="mr-4 down"
               @click="saveCourse"
               >Créer le cours</v-btn
             >
@@ -153,7 +168,12 @@ export default {
     },
     async saveCourse() {
       const formData = new FormData()
-      formData.append('authorId', parseInt(localStorage.getItem('auth.profile').split(',')[0].split(':')[1]))
+      formData.append(
+        'authorId',
+        parseInt(
+          localStorage.getItem('auth.profile').split(',')[0].split(':')[1]
+        )
+      )
       formData.append('title', this.title)
       formData.append('description', this.description)
       formData.append('places', Number(this.places))
@@ -181,7 +201,7 @@ export default {
         } catch (e) {
           console.log(e)
         }
-      }else{
+      } else {
         alert('Veuillez remplir tous les champs')
       }
     },
@@ -203,5 +223,18 @@ export default {
   color: white;
   font-weight: bold;
   font-size: 1.5rem;
+}
+
+.down {
+  margin-top: 6em;
+  margin-left: 1em;
+}
+
+.v-slider {
+  margin-top: 2em;
+}
+
+.form {
+  margin: 1em;
 }
 </style>

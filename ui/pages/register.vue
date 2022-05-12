@@ -49,7 +49,8 @@
           <v-col cols="12" md="4">
             <v-text-field
               :append-icon="
-                showPasswordConfirmation ? 'mdi-eye' : 'mdi-eye-off'"
+                showPasswordConfirmation ? 'mdi-eye' : 'mdi-eye-off'
+              "
               :rules="[rules.required, rules.min, rules.passwordConfirmation]"
               :type="showPasswordConfirmation ? 'text' : 'password'"
               name="passwordConfirmation"
@@ -84,12 +85,20 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
+            <v-card-title>
+              <v-icon large left> mdi-calendar-month </v-icon>
+              <span class="text-h6 font-weight-light"
+                >Date de naissance</span
+              >
+            </v-card-title>
             <v-date-picker
-            v-model="birthDay"
-            label="Date de naissance"
-            hint="13/07/1993"
-            title="Date de naissance"
-            required></v-date-picker>
+              v-model="birthDay"
+              label="Date de naissance"
+              hint="13/07/1993"
+              title="Date de naissance"
+              locale="fr"
+              required
+            ></v-date-picker>
           </v-col>
           <v-col cols="12" md="4">
             <v-container fluid>
@@ -117,9 +126,8 @@
   </div>
 </template>
 <script>
-
 export default {
-  auth : 'guest',
+  auth: 'guest',
   data() {
     return {
       emailRules: [
@@ -133,7 +141,10 @@ export default {
       passwordConfirmation: '',
       phone: '',
       address: '',
-      birthDay: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10).toString(),
+      birthDay: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10)
+        .toString(),
       radios: '',
       interests: '',
       showPassword: false,
@@ -142,15 +153,16 @@ export default {
       savingSuccessful: false,
       rules: {
         required: (value) => !!value || 'Ce champ est requis',
-        min: (v) => v.length >= 8 || 'Votre mot de passe doit contenir au moins 8 caractères',
+        min: (v) =>
+          v.length >= 8 ||
+          'Votre mot de passe doit contenir au moins 8 caractères',
         password: (v) =>
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
             v
           ) ||
           'Votre mot de passe doit contenir au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un caractère spécial',
-          passwordConfirmation: (v) =>
-            v === this.password || 'Les mots de passe ne correspondent pas',
-
+        passwordConfirmation: (v) =>
+          v === this.password || 'Les mots de passe ne correspondent pas',
       },
     }
   },
@@ -158,30 +170,31 @@ export default {
     save(e) {
       e.preventDefault()
       const user = {
-          firstName: this.firstname,
-          lastName: this.lastname,
-          email: this.email,
-          password: this.password,
-          phone: this.phone,
-          address: this.address,
-          birthDay: this.birthDay.toString(),
-          interests: this.interests,
-          role: this.radios,
+        firstName: this.firstname,
+        lastName: this.lastname,
+        email: this.email,
+        password: this.password,
+        phone: this.phone,
+        address: this.address,
+        birthDay: this.birthDay.toString(),
+        interests: this.interests,
+        role: this.radios,
       }
-      this.$axios.$post('/users', user)
-      .then(response => {
-        alert(response)
-        this.text = 'Vous avez réussi à vous enregistrer !'
-        this.savingSuccessful = true
-        setTimeout(() => {
-          this.$router.push('/login')
-        }, 2000)
-
-      }).catch(error => {
-        console.log(error.response)
-        this.text = 'Une erreur est survenue lors de l\'enregistrement'
-        this.savingSuccessful = false
-      })
+      this.$axios
+        .$post('/users', user)
+        .then((response) => {
+          alert(response)
+          this.text = 'Vous avez réussi à vous enregistrer !'
+          this.savingSuccessful = true
+          setTimeout(() => {
+            this.$router.push('/login')
+          }, 2000)
+        })
+        .catch((error) => {
+          console.log(error.response)
+          this.text = "Une erreur est survenue lors de l'enregistrement"
+          this.savingSuccessful = false
+        })
     },
   },
 }
