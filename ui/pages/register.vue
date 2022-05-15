@@ -87,9 +87,7 @@
           <v-col cols="12" md="4">
             <v-card-title>
               <v-icon large left> mdi-calendar-month </v-icon>
-              <span class="text-h6 font-weight-light"
-                >Date de naissance</span
-              >
+              <span class="text-h6 font-weight-light">Date de naissance</span>
             </v-card-title>
             <v-date-picker
               v-model="birthDay"
@@ -180,15 +178,15 @@ export default {
         interests: this.interests,
         role: this.radios,
       }
+      if(!user.firstName || !user.lastName || !user.email || !user.password || !user.phone || !user.address || !user.birthDay || !user.role) {
+        return alert('Veuillez remplir tous les champs')
+        }
       this.$axios
         .$post('/users', user)
         .then((response) => {
-          alert(response)
           this.text = 'Vous avez réussi à vous enregistrer !'
           this.savingSuccessful = true
-          setTimeout(() => {
-            this.$router.push('/login')
-          }, 2000)
+          this.$router.push('/login')
         })
         .catch((error) => {
           console.log(error.response)

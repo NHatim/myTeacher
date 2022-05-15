@@ -38,10 +38,12 @@ model Course {
   id                Int                 @id @default(autoincrement())
   title             String
   startDate         String
+  startHour         String
+  endHour           String
   price             Float
   address           String
   places            Int
-  image            String
+  image             String
   description       String
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
@@ -71,24 +73,15 @@ model Promotion {
   updatedAt DateTime @updatedAt
 }
 
-model Payment {
-  id                Int                @id @default(autoincrement())
-  status            Status             @default(PENDING)
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  ReservationCourse ReservationCourse?
-}
 
 model ReservationCourse {
   id        Int      @id @default(autoincrement())
-  paymentId Int      @unique
+  paymentId String      @unique
   courseId  Int
   userId    Int
-  date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   course    Course   @relation(fields: [courseId], references: [id])
-  payment   Payment  @relation(fields: [paymentId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
 

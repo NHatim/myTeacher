@@ -5,7 +5,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateReservationCourseDto {
+export class CreateReservationCoursePaymentDto {
   @IsNotEmpty()
   @IsNumber()
   courseId: number;
@@ -14,4 +14,7 @@ export class CreateReservationCourseDto {
   @IsNumberString()
   userId: number;
 
+  @IsNotEmpty()
+  @IsString()
+  paymentIntentId: string;
 }

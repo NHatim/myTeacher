@@ -1,5 +1,7 @@
 <template>
+
   <v-app dark>
+    <script src="https://js.stripe.com/v3/"></script>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -41,6 +43,27 @@
             <v-list-item-title v-text="items[3].title" />
           </v-list-item-content>
         </v-list-item>
+        <v-list-item
+          v-if="user.role === 'TEACHER'"
+          router
+          exact
+          to="/yourcourses"
+        >
+          <v-list-item-action>
+            <v-icon>{{ items[4].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[4].title" />
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-if="user.role === 'STUDENT'" router exact to="/courses">
+          <v-list-item-action>
+            <v-icon>{{ items[5].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[5].title" />
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
@@ -48,16 +71,13 @@
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
+      <v-btn v-if="user.email !== ''" icon @click.stop="clipped = !clipped">
         <v-icon>mdi-application</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
       {{ user.firstName }} {{ user.lastName }}
-      <v-btn>
-        <font-awesome-icon :icon="['fas', 'fa-cart-shopping']" />
-      </v-btn>
-      <v-btn icon @click.stop="logout()">
+      <v-btn v-if="connected" icon @click.stop="logout()">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
@@ -99,6 +119,16 @@ export default {
           title: 'Créer un cours',
           to: '/teacher',
         },
+        {
+          icon: 'mdi-school-outline',
+          title: 'Vos Cours',
+          to: '/yourcourses',
+        },
+        {
+          icon: 'mdi-library',
+          title: 'Cours',
+          to: '/courses',
+        },
       ],
       user: {
         firstName: '',
@@ -106,6 +136,7 @@ export default {
         email: '',
         role: '',
       },
+      connected : false,
       miniVariant: false,
       right: true,
       rightDrawer: false,
@@ -114,16 +145,17 @@ export default {
   },
   mounted() {
     if (this.$auth.$storage.getUniversal('profile')) {
-      this.user.firstName =
-        this.$auth.$storage.getUniversal('profile').firstName
+      this.user.firstName = this.$auth.$storage.getUniversal('profile').firstName
       this.user.lastName = this.$auth.$storage.getUniversal('profile').lastName
       this.user.email = this.$auth.$storage.getUniversal('profile').email
       this.user.role = this.$auth.$storage.getUniversal('profile').role
+      this.connected = true
     }
   },
   methods: {
     logout() {
       this.$auth.$storage.removeUniversal('profile')
+      this.connected = false
       window.location.href = '/'
     },
   },

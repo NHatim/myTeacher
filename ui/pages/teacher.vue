@@ -26,11 +26,7 @@
               v-model="price"
               label="Prix"
               hint="13.99"
-              :rules="[
-                (v) =>
-                  /^[+-]?([0-9]*[.])?[0-9]+$/.test(v) ||
-                  'Veuillez entrer un prix valide',
-              ]"
+              :rules="priceRules"
               prefix="€"
               required
             ></v-text-field>
@@ -61,7 +57,7 @@
               min="1"
             ></v-slider>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
             <v-card-title>
               <v-icon large left> mdi-calendar-month </v-icon>
               <span class="text-h6 font-weight-light"
@@ -76,12 +72,73 @@
               locale="fr"
             ></v-date-picker>
           </v-col>
+
+          <v-col cols="11" sm="2">
+            <v-menu
+              ref="menuBeginning"
+              v-model="menuBeginning"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="startHour"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="startHour"
+                  label="Heure de début"
+                  prepend-icon="mdi-clock-time-four-outline"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="menuBeginning"
+                v-model="startHour"
+                format="24hr"
+                full-width
+                @click:minute="$refs.menuBeginning.save(startHour)"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="11" sm="2">
+            <v-menu
+              ref="menuEnd"
+              v-model="menuEnd"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              :return-value.sync="endHour"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="endHour"
+                  label="Heure de début"
+                  prepend-icon="mdi-clock-time-four-outline"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="menuEnd"
+                v-model="endHour"
+                format="24hr"
+                full-width
+                @click:minute="$refs.menuEnd.save(endHour)"
+              ></v-time-picker>
+            </v-menu>
+          </v-col>
           <v-col cols="12" md="4">
-                        <v-card-title>
+            <v-card-title>
               <v-icon large left> mdi-file-image </v-icon>
-              <span class="text-h6 font-weight-light"
-                >Image pour le cours</span
-              >
+              <span class="text-h6 font-weight-light">Image pour le cours</span>
             </v-card-title>
             <client-only>
               <v-file-input
@@ -140,7 +197,16 @@ export default {
         (v) => !!v || 'Veuillez entrer votre email',
         (v) => /.+@.+\..+/.test(v) || 'Veuillez entrer un email valide',
       ],
+      priceRules: [
+        (v) =>
+          /^[+-]?([0-9]*[.])?[0-9]+$/.test(v) ||
+          'Veuillez entrer un prix valide',
+        (v) => (v && v > 0) || 'Veuillez entrer un prix supérieur à 0',
+        (v) => (v && v <= 50) || 'Veuillez entrer un prix inférieur à 50',
+      ],
       address: '',
+      startHour: '',
+      endHour: '',
       title: '',
       description: '',
       price: '',
@@ -150,6 +216,8 @@ export default {
       categories: [],
       categoryId: '',
       savingSuccessful: true,
+      menuBeginning: false,
+      menuEnd: false,
       rules: {
         required: (value) => !!value || 'Ce champ est requis',
         min: (v) =>
@@ -164,9 +232,9 @@ export default {
   methods: {
     setCategory(category) {
       this.categoryId = category
-      console.log(this.categoryId)
     },
     async saveCourse() {
+      console.log(this.startHour, this.endHour)
       const formData = new FormData()
       formData.append(
         'authorId',
@@ -182,6 +250,8 @@ export default {
       formData.append('price', Number(this.price))
       formData.append('address', this.address)
       formData.append('image', this.image)
+      formData.append('startHour', this.startHour)
+      formData.append('endHour', this.endHour)
       formData.forEach((value, key) => {
         if (!value) {
           this.savingSuccessful = false

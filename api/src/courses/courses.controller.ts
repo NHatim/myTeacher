@@ -3,26 +3,23 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
   UseGuards,
-  Req,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
+
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import path = require('path');
 import { join } from 'path';
-import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guards';
-import { FormDataRequest } from 'nestjs-form-data';
 
 export const storage = {
   storage: diskStorage({
@@ -54,7 +51,7 @@ export class CoursesController {
     @UploadedFile() image: Express.Multer.File,
     @Body() createCourseDto: CreateCourseDto,
   ) {
-    createCourseDto.image = image.path;
+    createCourseDto.image = image.filename;
     return this.coursesService.create(createCourseDto);
   }
 
@@ -62,15 +59,27 @@ export class CoursesController {
   findAll() {
     return this.coursesService.findAll();
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(+id);
+  @Get(':id/course')
+  findById(@Param('id') id: number) {
+    return this.coursesService.findById(Number(id));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.coursesService.update(+id, updateCourseDto);
+  @Get(':id')
+  findByAuhor(@Param('id') id: number) {
+    return this.coursesService.findByAuthor(Number(id));
+  }
+
+  @Get('/:id/image')
+  async getImage(@Param('id') id: any, @Res() res) {
+    const course = await this.coursesService.findById(Number(id));
+    if (!course) {
+      return res.status(404).json({
+        message: 'Course not found',
+      });
+    }
+    return res.sendFile(
+      join(__dirname, '..', '..', 'uploads', 'images', course.image),
+    );
   }
 
   @Delete(':id')

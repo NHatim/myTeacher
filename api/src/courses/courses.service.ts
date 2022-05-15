@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Res } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma.service';
 import { STRIPE_CLIENT } from 'src/stripe/constants';
@@ -44,6 +44,8 @@ export class CoursesService {
         startDate: createCourseDto.startDate,
         categoryId: Number(createCourseDto.categoryId),
         image: createCourseDto.image,
+        startHour: createCourseDto.startHour,
+        endHour: createCourseDto.endHour,
       },
     });
     await this.stripe.products.create({
@@ -61,21 +63,43 @@ export class CoursesService {
 
   async findAll() {
     return this.prisma.course.findMany({
+      where: {
+        places: {
+          gt: 0,
+        },
+      },
       include: {
         category: true,
       },
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
+  findByAuthor(id: number) {
+    return this.prisma.course.findMany({
+      where: { authorId: Number(id) },
+      include: {
+        category: true,
+      },
+    });
   }
 
+  findById(id: number) {
+    return this.prisma.course.findUnique({
+      where: { id: Number(id) },
+      include: {
+        category: true,
+      },
+    });
+  }
   update(id: number, updateCourseDto: UpdateCourseDto) {
     return `This action updates a #${id} course`;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} course`;
+    return this.prisma.course.delete({
+      where: {
+        id: Number(id),
+      },
+    });
   }
 }
