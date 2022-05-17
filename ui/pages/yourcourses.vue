@@ -12,6 +12,7 @@
       :image="getImage(course.id)"
       :button-text="'Modifier'"
       :places="course.places"
+      :address="course.address"
       :start-hour="course.startHour"
       :end-hour="course.endHour"
       class="col-md-4"

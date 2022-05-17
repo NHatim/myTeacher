@@ -9,18 +9,9 @@
         <v-row>
           <v-col cols="12" md="4">
             <v-text-field
-              v-model="firstname"
-              label="Prénom"
-              :rules="[(v) => !!v || 'Veuillez entrer votre prénom']"
-              required
-            ></v-text-field>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              v-model="lastname"
-              :rules="[(v) => !!v || 'Veuillez entrer votre nom']"
-              label="Nom"
+              v-model="completeName"
+              label="Nom complet de l'organisateur de cours"
+              :rules="[(v) => !!v || 'Veuillez entrer le nom complet de l\'organisateur de cours (ex: Jean Dupont, ou ASBL MicMac)']"
               required
             ></v-text-field>
           </v-col>
@@ -132,8 +123,7 @@ export default {
         (v) => !!v || 'Veuillez entrer votre email',
         (v) => /.+@.+\..+/.test(v) || 'Veuillez entrer un email valide',
       ],
-      firstname: '',
-      lastname: '',
+      completeName: '',
       email: '',
       password: '',
       passwordConfirmation: '',
@@ -168,8 +158,7 @@ export default {
     save(e) {
       e.preventDefault()
       const user = {
-        firstName: this.firstname,
-        lastName: this.lastname,
+        completeName: this.completeName,
         email: this.email,
         password: this.password,
         phone: this.phone,
@@ -178,7 +167,7 @@ export default {
         interests: this.interests,
         role: this.radios,
       }
-      if(!user.firstName || !user.lastName || !user.email || !user.password || !user.phone || !user.address || !user.birthDay || !user.role) {
+      if(!user.completeName || !user.email || !user.password || !user.phone || !user.address || !user.birthDay || !user.role) {
         return alert('Veuillez remplir tous les champs')
         }
       this.$axios

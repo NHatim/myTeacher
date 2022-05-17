@@ -13,8 +13,7 @@ model User {
   email             String              @unique
   password          String?
   description       String?
-  firstName         String
-  lastName          String
+  completeName      String
   birthDay          String
   address           String
   phone             String
@@ -42,7 +41,8 @@ model Course {
   endHour           String
   price             Float
   address           String
-  places            Int
+  placesMax         Int
+  currentPlaces     Int
   image             String
   description       String
   createdAt         DateTime            @default(now())
@@ -73,10 +73,9 @@ model Promotion {
   updatedAt DateTime @updatedAt
 }
 
-
 model ReservationCourse {
   id        Int      @id @default(autoincrement())
-  paymentId String      @unique
+  paymentId String   @unique
   courseId  Int
   userId    Int
   createdAt DateTime @default(now())

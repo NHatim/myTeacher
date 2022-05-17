@@ -37,6 +37,7 @@
               :rules="[(v) => !!v || 'Veuillez entrer le lieu de votre cours']"
               label="Lieu"
               hint="Exemple: Rue Gatti de Gamond 13, Uccle, 1180"
+              :value="address"
               required
             ></v-text-field>
           </v-col>
@@ -228,13 +229,13 @@ export default {
   },
   mounted() {
     this.getCategories()
+    this.getUserAdress()
   },
   methods: {
     setCategory(category) {
       this.categoryId = category
     },
     async saveCourse() {
-      console.log(this.startHour, this.endHour)
       const formData = new FormData()
       formData.append(
         'authorId',
@@ -283,6 +284,12 @@ export default {
           value: category.id,
         })
       })
+    },
+    async getUserAdress() {
+      const response = await this.$axios.$get(
+        `/users/${localStorage.getItem('auth.profile').split(',')[0].split(':')[1]}`
+      )
+      this.address = response.address
     },
   },
 }

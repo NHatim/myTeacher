@@ -28,8 +28,8 @@ export class CoursesService {
 
     if (
       createCourseDto.price < 0 ||
-      createCourseDto.places < 0 ||
-      createCourseDto.places > 100
+      createCourseDto.placesMax < 0 ||
+      createCourseDto.placesMax > 50
     ) {
       throw new Error('Invalid price or places');
     }
@@ -40,7 +40,8 @@ export class CoursesService {
         description: createCourseDto.description,
         price: Number(createCourseDto.price),
         address: createCourseDto.address,
-        places: Number(createCourseDto.places),
+        placesMax: Number(createCourseDto.placesMax),
+        currentPlaces: Number(createCourseDto.placesMax),
         startDate: createCourseDto.startDate,
         categoryId: Number(createCourseDto.categoryId),
         image: createCourseDto.image,
@@ -63,7 +64,7 @@ export class CoursesService {
   async findAll() {
     return this.prisma.course.findMany({
       where: {
-        places: {
+        currentPlaces: {
           gt: 0,
         },
       },

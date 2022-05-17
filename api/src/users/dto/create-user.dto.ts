@@ -11,11 +11,8 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  completeName: string;
 
-  @IsString()
-  @IsNotEmpty()
-  lastName: string;
 
   @IsString()
   @IsNotEmpty()

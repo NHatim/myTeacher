@@ -19,7 +19,7 @@ export class CreateCourseDto {
   address: string;
 
   @IsNotEmpty()
-  places: number;
+  placesMax: number;
 
   @IsDateString()
   @IsNotEmpty()

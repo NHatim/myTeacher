@@ -57,7 +57,7 @@ export class ReservationCourseService {
         id: Number(createReservationCoursePaymentDto.courseId),
       },
       data: {
-        places: {
+        currentPlaces: {
           decrement: 1,
         },
       },

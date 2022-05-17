@@ -34,6 +34,7 @@
 
           <div>
             Description : {{ description }} <br />
+            Lieu du cours : {{ address }} <br />
            <span v-if="seePlaces"> Nombre de places disponible : {{ places }}</span>
           </div>
         </v-card-text>
@@ -53,6 +54,9 @@
           </v-btn>
             <v-btn v-if="deleteButton" color="deep-purple lighten-2" text @click="reserve">
             {{ buttonText }}
+          </v-btn>
+          <v-btn v-if="seeStudents" color="deep-purple lighten-2" text @click="seeStudentRegistered">
+            Voir les étudiants inscrits
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -117,6 +121,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    address: {
+      type: String,
+      default: '',
+    },
+    seeStudent: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -141,6 +153,15 @@ export default {
         component: 'CoursePost',
       })
     },
+
+    seeStudentRegistered(){
+      const courseId = this.id
+      this.$router.push({
+        name: 'studentsregistered',
+        params: { courseId },
+        component: 'CoursePost',
+      })
+    }
   },
 }
 </script>
