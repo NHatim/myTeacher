@@ -64,6 +64,14 @@
             <v-list-item-title v-text="items[5].title" />
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="user.role === 'STUDENT'" router exact to="/studentcourses">
+          <v-list-item-action>
+            <v-icon>{{ items[6].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[6].title" />
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app>
@@ -121,13 +129,18 @@ export default {
         },
         {
           icon: 'mdi-school-outline',
-          title: 'Vos Cours',
+          title: 'Vos Cours Créer',
           to: '/yourcourses',
         },
         {
           icon: 'mdi-library',
           title: 'Cours',
           to: '/courses',
+        },
+        {
+          icon: 'mdi-book-education',
+          title: 'Vos Cours Souscrit',
+          to: '/studentcourses',
         },
       ],
       user: {

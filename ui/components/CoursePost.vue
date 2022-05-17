@@ -34,7 +34,7 @@
 
           <div>
             Description : {{ description }} <br />
-            Nombre de places disponible : {{ places }}
+           <span v-if="seePlaces"> Nombre de places disponible : {{ places }}</span>
           </div>
         </v-card-text>
 
@@ -112,6 +112,10 @@ export default {
     deleteButton: {
       type: Boolean,
       default: false,
+    },
+    seePlaces: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

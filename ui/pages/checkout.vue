@@ -25,6 +25,18 @@
         class="col-md-4"
       />
     </v-row>
+    <v-snackbar
+      v-if="snackbar"
+      :timeout="-1"
+      :value="true"
+      color="success"
+      absolute
+      right
+      rounded="pill"
+      top
+    >
+      Paiement Réussi !
+    </v-snackbar>
   </div>
 </template>
 
@@ -41,6 +53,7 @@ export default {
         id: Number(this.$router.currentRoute.params.courseId),
       },
       email: '',
+      snackbar: false,
     }
   },
   async mounted() {
@@ -69,7 +82,7 @@ export default {
     document
       .querySelector('#payment-form')
       .addEventListener('submit', handleSubmit)
-    let idPaymentIntent;
+    let idPaymentIntent
     async function initialize() {
       const response = await fetch(
         'http://localhost:3000/reservation-course/create-payment-intent',
@@ -104,7 +117,6 @@ export default {
         confirmParams: {
           // Make sure to change this to your payment completion page
           receipt_email: 'hatim.naimi@gmail.com',
-
         },
         redirect: 'if_required',
       })
@@ -117,7 +129,7 @@ export default {
       }
 
       setLoading(false)
-       await fetch(
+      await fetch(
         'http://localhost:3000/reservation-course/create-reservation-course',
         {
           method: 'POST',
@@ -132,8 +144,10 @@ export default {
           }),
         }
       )
-      window.location.replace("/success");
-
+      snackbar = true
+      setTimeout(() => {
+        window.location.replace('/studentcourses')
+      }, 2000)
     }
 
     async function checkStatus() {

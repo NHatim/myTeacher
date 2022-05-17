@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Res, Req } from '@nestjs/common';
 import { ReservationCourseService } from './reservation_course.service';
 import { CreateReservationCourseDto } from './dto/create-reservation_course.dto';
 import { CreateReservationCoursePaymentDto } from './dto/create-reservation_course_payment.dto';
@@ -31,8 +31,8 @@ export class ReservationCourseController {
   }
 
   @Get()
-  findAll() {
-    return this.reservationCourseService.findAll();
+  findAll(@Req() req) {
+    return this.reservationCourseService.findAll(+req.query.userId);
   }
 
   @Get(':id')

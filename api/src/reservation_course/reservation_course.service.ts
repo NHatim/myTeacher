@@ -79,8 +79,15 @@ export class ReservationCourseService {
     });
   }
 
-  findAll() {
-    return `This action returns all reservationCourse`;
+  findAll(userId: number) {
+    return this.prisma.reservationCourse.findMany({
+      include: {
+        course: true,
+      },
+      where: {
+        userId: Number(userId),
+      },
+    });
   }
 
   findOne(id: number) {
