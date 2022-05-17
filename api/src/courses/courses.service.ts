@@ -52,7 +52,6 @@ export class CoursesService {
       name: createdCourse.title,
       description: createdCourse.description,
       id: createdCourse.id.toString(),
-      images: [createdCourse.image],
     });
     return this.stripe.prices.create({
       product: createdCourse.id.toString(),
