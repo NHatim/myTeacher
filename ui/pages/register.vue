@@ -10,8 +10,8 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="completeName"
-              label="Nom complet de l'organisateur de cours"
-              :rules="[(v) => !!v || 'Veuillez entrer le nom complet de l\'organisateur de cours (ex: Jean Dupont, ou ASBL MicMac)']"
+              label="Nom complet"
+              :rules="[(v) => !!v || 'Veuillez entrer le nom complet']"
               required
             ></v-text-field>
           </v-col>
