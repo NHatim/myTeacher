@@ -2,11 +2,15 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailerService,
+  ) {}
   async create(createUserDto: CreateUserDto) {
     {
       const user = await this.prisma.user.findUnique({
@@ -18,12 +22,19 @@ export class UsersService {
         createUserDto.password,
         saltOrRounds,
       );
-      return this.prisma.user.create({
+      await this.prisma.user.create({
         data: {
           ...createUserDto,
           password: hashedPassword,
         },
       });
+      await this.mailService.sendMail({
+        to: createUserDto.email,
+        from: 'noreply@myteacher.com',
+        subject: 'Welcome to MyTeacher ✔',
+        text: `Bienvenue sur MyTeacher, ${createUserDto.completeName}, Nous espérons que vous apprécierez notre service.`,
+      });
+      return 'success';
     }
   }
 
@@ -46,8 +57,12 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findOne(id: number) {
+    const { completeName, ...user } = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    return completeName;
   }
 
   async findOneByEmail(email: string) {

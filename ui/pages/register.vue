@@ -84,6 +84,8 @@
               v-model="birthDay"
               label="Date de naissance"
               hint="13/07/1993"
+              min="1930-01-01"
+              max="2002-12-31"
               title="Date de naissance"
               locale="fr"
               required

@@ -18,7 +18,7 @@
             <v-list-item-title v-text="items[0].title" />
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="!user.firstName" exact to="/register">
+        <v-list-item v-if="!connected" exact to="/register">
           <v-list-item-action>
             <v-icon>{{ items[1].icon }}</v-icon>
           </v-list-item-action>
@@ -27,7 +27,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="!user.firstName" router exact to="/login">
+        <v-list-item v-if="!connected" router exact to="/login">
           <v-list-item-action>
             <v-icon>{{ items[2].icon }}</v-icon>
           </v-list-item-action>
@@ -56,7 +56,7 @@
             <v-list-item-title v-text="items[4].title" />
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="user.role === 'STUDENT'" router exact to="/courses">
+        <v-list-item router exact to="/courses">
           <v-list-item-action>
             <v-icon>{{ items[5].icon }}</v-icon>
           </v-list-item-action>
@@ -158,8 +158,7 @@ export default {
   },
   mounted() {
     if (this.$auth.$storage.getUniversal('profile')) {
-      this.user.firstName = this.$auth.$storage.getUniversal('profile').firstName
-      this.user.lastName = this.$auth.$storage.getUniversal('profile').lastName
+      this.user.lastName = this.$auth.$storage.getUniversal('profile').completeName
       this.user.email = this.$auth.$storage.getUniversal('profile').email
       this.user.role = this.$auth.$storage.getUniversal('profile').role
       this.connected = true

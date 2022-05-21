@@ -3,18 +3,20 @@
     <v-row>
     <CoursePost
       v-for="course in courses"
+      :id="course.id"
       :key="course.id"
       :title="course.title"
       :description="course.description"
       :category-name="course.category.name"
       :price="course.price"
-      :start-date="course.startDate"
       :image="getImage(course.id)"
-      :button-text="'Modifier'"
-      :places="course.places"
+      :teacher=true
+      :delete-bool=true
+      :see-students=true
+      :current-places="course.currentPlaces"
+      :places-max="course.placesMax"
       :address="course.address"
-      :start-hour="course.startHour"
-      :end-hour="course.endHour"
+      :date-hour="course.dateHour[0]"
       class="col-md-4"
     />
     </v-row>
@@ -29,6 +31,7 @@ export default {
       loading: false,
       selection: 1,
       courses: [],
+      dateHour: [],
       image: null,
     }
   },

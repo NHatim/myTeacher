@@ -1,5 +1,15 @@
 <template>
   <div>
+            <v-alert
+        v-if="alert"
+        v-model="alert"
+      dense
+      elevation="2"
+      dismissible
+      type="error"
+    >
+       <strong>Vous ne pouvez pas supprimer des cours qui ont déjà été achetés</strong>
+    </v-alert>
     <v-row>
       <v-card :loading="loading" class="mx-auto my-12" max-width="374">
         <template slot="progress">
@@ -13,11 +23,13 @@
         <v-img height="250" :src="image"></v-img>
 
         <v-card-title>{{ title }}</v-card-title>
-
+        <v-divider class="mx-4"></v-divider>
+                <v-card-text v-if="author"> Auteur du cours : {{ author }}</v-card-text>
+                <v-divider class="mx-4"></v-divider>
         <v-card-text>
           <v-row align="center" class="mx-0">
             <v-rating
-              :value="4.5"
+              :value="rating"
               color="amber"
               dense
               half-increments
@@ -25,7 +37,7 @@
               size="14"
             ></v-rating>
 
-            <div class="grey--text ms-4">4.5 (413)</div>
+            <div class="grey--text ms-4">{{rating}} ({{numberOfRatings}})</div>
           </v-row>
 
           <div class="my-4 text-subtitle-1">
@@ -35,28 +47,30 @@
           <div>
             Description : {{ description }} <br />
             Lieu du cours : {{ address }} <br />
-           <span v-if="seePlaces"> Nombre de places disponible : {{ places }}</span>
+           <span v-if="seePlaces"> Nombre de places disponible : {{ currentPlaces }} sur {{ placesMax }}</span>
           </div>
         </v-card-text>
 
         <v-divider class="mx-4"></v-divider>
 
-        <v-card-title> Date de début : {{ startDate }}</v-card-title>
+        <v-card-title> Date de(s) cours</v-card-title>
                 <v-card-text>
           <div>
-            Heure de début : {{ startHour }} <br />
-            Heure de fin : {{ endHour }}
+            {{ dateHour }} <br />
           </div>
           </v-card-text>
         <v-card-actions>
-          <v-btn  color="deep-purple lighten-2" text @click="reserve">
-            {{ buttonText }}
+          <v-btn   v-if="student" color="deep-purple lighten-2" text @click="reserve">
+            Réserver
           </v-btn>
-            <v-btn v-if="deleteButton" color="deep-purple lighten-2" text @click="reserve">
-            {{ buttonText }}
+          <v-btn   v-if="teacher" color="deep-purple lighten-2" text @click="modify">
+            Modifier
+          </v-btn>
+            <v-btn v-if="deleteBool"  color="error" depressed text @click="deleteCourse">
+            Supprimer
           </v-btn>
           <v-btn v-if="seeStudents" color="deep-purple lighten-2" text @click="seeStudentRegistered">
-            Voir les étudiants inscrits
+            Etudiant(s)
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -77,6 +91,18 @@ export default {
       type: String,
       default: '',
     },
+    rating: {
+      type: Number,
+      default: 0,
+    },
+    numberOfRatings: {
+      type: Number,
+      default: 0,
+    },
+    author: {
+      type: String,
+      default: '',
+    },
     price: {
       type: Number,
       default: 0,
@@ -89,15 +115,22 @@ export default {
       type: String,
       default: '',
     },
-    startDate: {
+    dateHour: {
       type: String,
-      default: '',
     },
     buttonText: {
       type: String,
       default: '',
     },
-    places: {
+    deleteBool: {
+      type: Boolean,
+      default: false,
+    },
+    currentPlaces: {
+      type: Number,
+      default: 0,
+    },
+    placesMax: {
       type: Number,
       default: 0,
     },
@@ -125,13 +158,22 @@ export default {
       type: String,
       default: '',
     },
-    seeStudent: {
+    seeStudents: {
+      type: Boolean,
+      default: false,
+    },
+    student: {
+      type: Boolean,
+      default: false,
+    },
+    teacher: {
       type: Boolean,
       default: false,
     },
   },
   data() {
     return {
+      alert : false,
       loading: false,
     }
   },
@@ -145,13 +187,19 @@ export default {
       })
     },
 
-    deleteCourse(){
+    async deleteCourse(){
       const courseId = this.id
-      this.$axios.delete(`/courses/${courseId}`)
-      this.$router.push({
-        name: 'yourcourses',
-        component: 'CoursePost',
-      })
+      try{
+        const response = await this.$axios.delete(`/courses/${courseId}`)
+        if(response.data.success){
+          this.$router.push({
+            name: 'courses',
+            component: 'CoursePost',
+          })
+        }
+      }catch{
+        this.alert = true
+      }
     },
 
     seeStudentRegistered(){
@@ -161,7 +209,19 @@ export default {
         params: { courseId },
         component: 'CoursePost',
       })
-    }
+    },
+    renderDate(){
+      return this.dateHour.replace(',', ' | Date : ')
+    },
+    modify(){
+      const courseId = this.id
+      this.$router.push({
+        name: 'modifycourse',
+        params: { courseId },
+        component: 'CoursePost',
+      })
+    },
+
   },
 }
 </script>

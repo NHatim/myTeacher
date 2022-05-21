@@ -34,6 +34,10 @@ export class ReservationCourseController {
   findAll(@Req() req) {
     return this.reservationCourseService.findAll(+req.query.userId);
   }
+  @Get('/studentbycourse/:id')
+  findStudentByCourse(@Param('id') id: string) {
+    return this.reservationCourseService.findStudentByCourse(+id);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

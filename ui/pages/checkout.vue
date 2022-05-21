@@ -17,11 +17,10 @@
         :title="course.title"
         :description="course.description"
         :price="course.price"
-        :start-date="course.startDate"
-        :places="course.places"
+        :date-hour="course.dateHour[0]"
+        :places-max="course.placesMax"
+        :current-places="course.currentPlaces"
         :image="getImage(course.id)"
-        :start-hour="course.startHour"
-        :end-hour="course.endHour"
         class="col-md-4"
       />
     </v-row>
@@ -48,8 +47,9 @@ export default {
         price: 0,
         title: '',
         description: '',
-        startDate: '',
-        places: 0,
+        dateHour: '',
+        currentPlaces: 0,
+        placesMax: 0,
         id: Number(this.$router.currentRoute.params.courseId),
       },
       email: '',
@@ -144,7 +144,7 @@ export default {
           }),
         }
       )
-      snackbar = true
+      this.snackbar = true
       setTimeout(() => {
         window.location.replace('/studentcourses')
       }, 2000)

@@ -21,17 +21,8 @@ export class CreateCourseDto {
   @IsNotEmpty()
   placesMax: number;
 
-  @IsDateString()
   @IsNotEmpty()
-  startDate: string;
-
-  @IsNotEmpty()
-  @IsString()
-  startHour: string;
-
-  @IsNotEmpty()
-  @IsString()
-  endHour: string;
+  dateHour: string[];
 
   @IsNotEmpty()
   categoryId: number;

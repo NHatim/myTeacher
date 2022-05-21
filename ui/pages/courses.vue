@@ -6,15 +6,15 @@
         :id="course.id"
         :key="course.id"
         :title="course.title"
+        :author="course.author.completeName"
         :description="course.description"
         :category-name="course.category.name"
         :price="course.price"
-        :start-date="course.startDate"
-        :places="course.places"
+        :places-max="course.placesMax"
+        :current-places="course.currentPlaces"
+        :date-hour="course.dateHour[0]"
+        :address="course.address"
         :image="getImage(course.id)"
-        :start-hour="course.startHour"
-        :end-hour="course.endHour"
-        :button-text="'Reserver'"
         class="col-md-4"
       />
     </v-row>
@@ -39,6 +39,7 @@ export default {
         .get('/courses')
         .then((response) => {
           this.courses = response.data
+          console.log(this.courses)
         })
         .catch((error) => {
           console.log(error)

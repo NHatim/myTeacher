@@ -9,6 +9,7 @@ import {
   UseGuards,
   UploadedFile,
   Res,
+  Put,
 } from '@nestjs/common';
 
 import { diskStorage } from 'multer';
@@ -20,6 +21,7 @@ import { Express } from 'express';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guards';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 export const storage = {
   storage: diskStorage({
@@ -80,6 +82,11 @@ export class CoursesController {
     return res.sendFile(
       join(__dirname, '..', '..', 'uploads', 'images', course.image),
     );
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+    return this.coursesService.update(Number(id), updateCourseDto);
   }
 
   @Delete(':id')

@@ -93,6 +93,17 @@ export class ReservationCourseService {
   findOne(id: number) {
     return `This action returns a #${id} reservationCourse`;
   }
+  async findStudentByCourse(courseId: number) {
+    const students = await this.prisma.reservationCourse.findMany({
+      include: {
+        user: true,
+      },
+      where: {
+        courseId: Number(courseId),
+      },
+    });
+    return students.map((student) => student.user);
+  }
 }
 function calculateOrderAmount(price: any): number {
   return Math.round(price * 100);

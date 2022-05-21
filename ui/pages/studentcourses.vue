@@ -5,14 +5,14 @@
         v-for="course in courses"
         :id="course.id"
         :key="course.id"
+        :author="course.author"
         :title="course.title"
         :description="course.description"
         :price="course.price"
-        :start-date="course.startDate"
+        :date-hour="course.dateHour[0]"
+        :address="course.address"
         :see-places="false"
         :image="getImage(course.id)"
-        :start-hour="course.startHour"
-        :end-hour="course.endHour"
         class="col-md-4"
       />
     </v-row>
@@ -45,9 +45,24 @@ export default {
           },
         })
         .then((response) => {
-          response.data.forEach((reservation) => {
+          response.data.forEach(async (reservation) => {
+            const author = await this.$axios.get(
+              '/users/user/' + reservation.course.authorId,
+              {
+                headers: {
+                  Authorization: 'Bearer ' + localStorage.getItem('auth.token'),
+                },
+              },
+              {
+                params: {
+                  id: reservation.course.authorId,
+                },
+              }
+            )
+            reservation.course.author = author.data
             this.courses.push(reservation.course)
           })
+
           console.log('Course', this.courses)
         })
         .catch((error) => {

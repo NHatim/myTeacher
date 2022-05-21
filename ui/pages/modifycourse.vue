@@ -17,6 +17,7 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="title"
+              :value="title"
               label="Titre"
               :rules="[(v) => !!v || 'Veuillez entrer votre titre']"
               required
@@ -26,6 +27,7 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="description"
+              :value="description"
               :rules="[(v) => !!v || 'Veuillez entrer votre description']"
               label="Description"
               required
@@ -34,6 +36,7 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="price"
+              :value="price"
               label="Prix"
               hint="13.99"
               :rules="priceRules"
@@ -44,10 +47,10 @@
           <v-col cols="12" md="4">
             <v-text-field
               v-model="address"
+              :value="address"
               :rules="[(v) => !!v || 'Veuillez entrer le lieu de votre cours']"
               label="Lieu"
               hint="Exemple: Rue Gatti de Gamond 13, Uccle, 1180"
-              :value="address"
               required
             ></v-text-field>
           </v-col>
@@ -60,7 +63,10 @@
           </v-col>
           <v-col cols="12" md="4">
             <v-slider
-              v-model="places"
+              v-model="placesMax"
+              :rules="[(v) => !!v || 'Veuillez entrer le nombre de places']"
+              required
+              :value="placesMax"
               label="Nombre de places disponibles"
               thumb-label="always"
               class="v-slider"
@@ -188,7 +194,7 @@ export default {
       title: '',
       description: '',
       price: '',
-      places: '',
+      placesMax: '',
       image: [],
       categories: [],
       categoryId: '',
@@ -200,7 +206,7 @@ export default {
   },
   mounted() {
     this.getCategories()
-    this.getUserAdress()
+    this.getCourse()
   },
   methods: {
     setCategory(category) {
@@ -227,7 +233,7 @@ export default {
       )
       formData.append('title', this.title)
       formData.append('description', this.description)
-      formData.append('placesMax', Number(this.places))
+      formData.append('placesMax', Number(this.placesMax))
       formData.append('dateHour', this.dateHour)
       formData.append('categoryId', Number(this.categoryId))
       formData.append('price', Number(this.price))
@@ -241,7 +247,7 @@ export default {
       })
       if (this.savingSuccessful) {
         try {
-          await this.$axios.post('/courses', formData, {
+          await this.$axios.put(`/courses/modify/${this.$router.currentRoute.params.courseId}`, formData, {
             headers: {
               'Content-Type':
                 'multipart/form-data boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
@@ -255,6 +261,24 @@ export default {
       } else {
         alert('Veuillez remplir tous les champs')
       }
+    },
+    async getCourse() {
+      const course = await this.$axios.get(
+        `http://localhost:3000/courses/${this.$router.currentRoute.params.courseId}/course`,
+        {
+          params: {
+            id: Number(this.$router.currentRoute.params.courseId),
+          },
+        }
+      )
+      this.title = course.data.title
+      this.description = course.data.description
+      this.price = course.data.price
+      this.placesMax = course.data.placesMax
+      this.address = course.data.address
+      this.categoryId = course.data.categoryId
+      this.dateHour = course.data.dateHour
+
     },
     async getCategories() {
       const response = await this.$axios.$get('/category')
@@ -285,9 +309,9 @@ export default {
       return new Set(arr).size !== arr.length
     },
     remove() {
-      if(this.components.length > 1) {
+      if (this.components.length > 1) {
         this.components.pop()
-      }else{
+      } else {
         alert('Vous ne pouvez pas supprimer le dernier cours')
       }
     },
