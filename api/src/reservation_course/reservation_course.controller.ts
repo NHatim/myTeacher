@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Res, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Res,
+  Req,
+  Put,
+} from '@nestjs/common';
 import { ReservationCourseService } from './reservation_course.service';
 import { CreateReservationCourseDto } from './dto/create-reservation_course.dto';
 import { CreateReservationCoursePaymentDto } from './dto/create-reservation_course_payment.dto';
@@ -39,8 +48,19 @@ export class ReservationCourseController {
     return this.reservationCourseService.findStudentByCourse(+id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reservationCourseService.findOne(+id);
+  @Put('/present/:userId/:courseId')
+  updatePresent(
+    @Param('userId') userId: string,
+    @Param('courseId') courseId: string,
+  ) {
+    return this.reservationCourseService.updatePresent(+userId, +courseId);
+  }
+
+  @Get('is-present/:userId/:courseId')
+  isPresent(
+    @Param('userId') userId: string,
+    @Param('courseId') courseId: string,
+  ) {
+    return this.reservationCourseService.isPresent(+userId, +courseId);
   }
 }

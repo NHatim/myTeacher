@@ -10,8 +10,12 @@
         :description="course.description"
         :price="course.price"
         :date-hour="course.dateHour[0]"
+        :number-of-ratings="course.reviews.length"
+        :rating-tab="course.reviews"
+        :contact-teacher="true"
         :address="course.address"
         :see-places="false"
+        :can-rate="true"
         :image="getImage(course.id)"
         class="col-md-4"
       />
@@ -59,11 +63,14 @@ export default {
                 },
               }
             )
+            const reviews = await this.$axios.get(
+              '/reviews/' + reservation.course.id
+            )
+            console.log(reviews)
             reservation.course.author = author.data
+            reservation.course.reviews = reviews.data
             this.courses.push(reservation.course)
           })
-
-          console.log('Course', this.courses)
         })
         .catch((error) => {
           console.log(error)

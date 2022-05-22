@@ -61,8 +61,21 @@ export class UsersService {
     const { completeName, ...user } = await this.prisma.user.findUnique({
       where: { id },
     });
-
     return completeName;
+  }
+
+  async findOneEmail(id: number) {
+    const { email, ...user } = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    return email;
+  }
+
+  async findTeachers() {
+    return this.prisma.user.findMany({
+      where: { role: 'TEACHER' },
+    });
   }
 
   async findOneByEmail(email: string) {
@@ -85,5 +98,22 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async contactTeacher(body: any) {
+    const { email, message, subject, courseId, completeName } = body;
+
+    const authorEmail = await this.prisma.course.findFirst({
+      where: { id: courseId },
+      include: { author: true },
+    });
+    const date = new Date();
+    await this.mailService.sendMail({
+      to: authorEmail.author.email,
+      from: process.env.MAIL_USERNAME,
+      subject: subject,
+      html: `Ce message vous a été transmis le <strong>${date}</strong> par l'étudiant <strong>${completeName}</strong><br/>
+      ${message}`,
+    });
   }
 }

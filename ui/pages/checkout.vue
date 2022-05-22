@@ -17,6 +17,8 @@
         :title="course.title"
         :description="course.description"
         :price="course.price"
+        :rating-tab="course.reviews"
+        :number-of-ratings="course.reviews.length"
         :date-hour="course.dateHour[0]"
         :places-max="course.placesMax"
         :current-places="course.currentPlaces"
@@ -50,6 +52,7 @@ export default {
         dateHour: '',
         currentPlaces: 0,
         placesMax: 0,
+        reviews: [],
         id: Number(this.$router.currentRoute.params.courseId),
       },
       email: '',
@@ -74,8 +77,12 @@ export default {
         },
       }
     )
-    this.course = course.data
 
+    this.course = course.data
+                    const reviews = await this.$axios.get(
+              '/reviews/' + this.course.id
+            )
+    this.course.reviews = reviews.data
     initialize()
     checkStatus()
     let elements
@@ -164,7 +171,6 @@ export default {
       switch (paymentIntent.status) {
         case 'succeeded':
           showMessage('Payment succeeded!')
-          console.log('Payment succeeded!')
           break
         case 'processing':
           showMessage('Your payment is processing.')

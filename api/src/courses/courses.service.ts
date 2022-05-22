@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { MailerService } from '@nestjs-modules/mailer';
 import { PrismaService } from 'src/prisma.service';
@@ -118,6 +124,7 @@ export class CoursesService {
       include: {
         category: true,
         author: true,
+        reviews: true,
       },
     });
   }
@@ -127,6 +134,7 @@ export class CoursesService {
       where: { authorId: Number(id) },
       include: {
         category: true,
+        reviews: true,
       },
     });
   }
@@ -137,6 +145,7 @@ export class CoursesService {
       include: {
         category: true,
         author: true,
+        reviews: true,
       },
     });
   }
@@ -145,12 +154,12 @@ export class CoursesService {
       name: updateCourseDto.title,
       description: updateCourseDto.description,
     });
+
     return this.prisma.course.update({
       where: { id: Number(id) },
       data: {
         title: updateCourseDto.title,
         description: updateCourseDto.description,
-        price: Number(updateCourseDto.price),
         address: updateCourseDto.address,
         placesMax: Number(updateCourseDto.placesMax),
         categoryId: Number(updateCourseDto.categoryId),
@@ -175,7 +184,6 @@ export class CoursesService {
         HttpStatus.FORBIDDEN,
       );
     } else {
-      await this.stripe.products.del(id.toString());
       return this.prisma.course.delete({
         where: { id: Number(id) },
       });

@@ -24,6 +24,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Get('/findteachers')
+  findTeachers() {
+    return this.usersService.findTeachers();
+  }
+
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -32,6 +37,11 @@ export class UsersController {
   @Get('/user/:id')
   findById(@Param('id') id: string) {
     return this.usersService.findOne(+id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('/email/:id')
+  findByEmail(@Param('id') id: string) {
+    return this.usersService.findOneEmail(+id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -48,5 +58,10 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('/contact-teacher')
+  async contactTeacher(@Body() body: any) {
+    return this.usersService.contactTeacher(body);
   }
 }

@@ -35,17 +35,6 @@
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
-              v-model="price"
-              :value="price"
-              label="Prix"
-              hint="13.99"
-              :rules="priceRules"
-              prefix="€"
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
               v-model="address"
               :value="address"
               :rules="[(v) => !!v || 'Veuillez entrer le lieu de votre cours']"
@@ -57,6 +46,7 @@
           <v-col cols="12" md="4">
             <v-select
               :items="categories"
+              :value="categoryId"
               label="Catégorie"
               @input="setCategory"
             ></v-select>
@@ -156,8 +146,8 @@
                 elevation="5"
                 large
                 class="mr-4 down"
-                @click="saveCourse"
-                >Créer le cours</v-btn
+                @click="modifyCourse"
+                >Modifier le cours</v-btn
               >
             </v-col>
           </v-row>
@@ -193,7 +183,6 @@ export default {
       dateHour: [],
       title: '',
       description: '',
-      price: '',
       placesMax: '',
       image: [],
       categories: [],
@@ -213,7 +202,7 @@ export default {
       this.categoryId = category
     },
 
-    async saveCourse() {
+    async modifyCourse() {
       this.$refs.component.forEach((component) => {
         this.dateHour.push(
           component.date + ' ' + component.startHour + ' ' + component.endHour
@@ -225,33 +214,28 @@ export default {
         return
       }
       const formData = new FormData()
-      formData.append(
-        'authorId',
-        parseInt(
-          localStorage.getItem('auth.profile').split(',')[0].split(':')[1]
-        )
-      )
       formData.append('title', this.title)
       formData.append('description', this.description)
       formData.append('placesMax', Number(this.placesMax))
       formData.append('dateHour', this.dateHour)
       formData.append('categoryId', Number(this.categoryId))
-      formData.append('price', Number(this.price))
       formData.append('address', this.address)
       formData.append('image', this.image)
       formData.forEach((value, key) => {
         if (!value) {
           this.savingSuccessful = false
-          console.log(value, key)
         }
       })
       if (this.savingSuccessful) {
         try {
-          await this.$axios.put(`/courses/modify/${this.$router.currentRoute.params.courseId}`, formData, {
+          await this.$axios.put(`/courses/${this.$router.currentRoute.params.courseId}`, formData, {
             headers: {
               'Content-Type':
                 'multipart/form-data boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW',
               Authorization: 'Bearer ' + localStorage.getItem('auth.token'),
+            },
+            params: {
+              id: this.$router.currentRoute.params.courseId,
             },
           })
           this.$router.push('/yourcourses')
@@ -273,11 +257,9 @@ export default {
       )
       this.title = course.data.title
       this.description = course.data.description
-      this.price = course.data.price
       this.placesMax = course.data.placesMax
       this.address = course.data.address
       this.categoryId = course.data.categoryId
-      this.dateHour = course.data.dateHour
 
     },
     async getCategories() {

@@ -236,7 +236,6 @@ export default {
       formData.forEach((value, key) => {
         if (!value) {
           this.savingSuccessful = false
-          console.log(value, key)
         }
       })
       if (this.savingSuccessful) {

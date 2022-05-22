@@ -11,6 +11,9 @@
       :price="course.price"
       :image="getImage(course.id)"
       :teacher=true
+      :can-rate="false"
+      :rating-tab="course.reviews"
+      :number-of-ratings="course.reviews.length"
       :delete-bool=true
       :see-students=true
       :current-places="course.currentPlaces"

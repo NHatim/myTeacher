@@ -9,9 +9,7 @@ import { UsersModule } from './users/users.module';
 import { StripeModule } from './stripe/stripe.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ReviewController } from './review/review.controller';
-import { ReviewService } from './review/review.service';
-import { ReviewModule } from './review/review.module';
+import { ReviewsModule } from './reviews/reviews.module';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '../.env' });
 @Module({
@@ -32,9 +30,9 @@ dotenv.config({ path: __dirname + '../.env' });
         },
       },
     }),
-    ReviewModule,
+    ReviewsModule,
   ],
-  controllers: [AppController, ReviewController],
-  providers: [AppService, ReviewService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -84,8 +84,13 @@ export class CoursesController {
     );
   }
 
+  @UseInterceptors(FileInterceptor('image', storage))
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+  update(
+    @UploadedFile() image: Express.Multer.File,
+    @Param('id') id: string,
+    @Body() updateCourseDto: UpdateCourseDto,
+  ) {
     return this.coursesService.update(Number(id), updateCourseDto);
   }
 
