@@ -13,7 +13,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   completeName: string;
 
-
   @IsString()
   @IsNotEmpty()
   birthDay: string;
@@ -23,9 +22,9 @@ export class CreateUserDto {
   address: string;
 
   @IsString()
-  @IsIn(['TEACHER', 'STUDENT'])
+  @IsIn(['TEACHER', 'STUDENT', 'ADMIN'])
   @IsNotEmpty()
-  role: 'TEACHER' | 'STUDENT';
+  role: 'TEACHER' | 'STUDENT' | 'ADMIN';
 
   @IsString()
   @IsNotEmpty()

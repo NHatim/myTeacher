@@ -79,5 +79,6 @@ model Review {
 enum Role {
   TEACHER
   STUDENT
+  ADMIN
 }
 

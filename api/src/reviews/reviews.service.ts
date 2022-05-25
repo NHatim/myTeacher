@@ -23,6 +23,9 @@ export class ReviewsService {
       where: {
         courseId: Number(id),
       },
+      include: {
+        user: true,
+      },
     });
   }
 

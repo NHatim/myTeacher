@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mx-auto" max-width="344">
+    <v-card class="mx-auto" max-width="520">
       <v-img
         src="https://c8.alamy.com/zooms/9/52c3ea49892f4e5789b31cadac8aa969/2gefnr1.jpg"
         height="200px"
@@ -22,6 +22,11 @@
         <v-btn color="orange lighten-2" text @click="isPresent">
           Rajouter une présence
         </v-btn>
+        <v-row>
+          <v-btn color="blue lighten-2" text @click="mailStudent">
+            Communiquer avec les étudiants
+          </v-btn></v-row
+        >
       </v-card-actions>
     </v-card>
   </div>
@@ -59,12 +64,21 @@ export default {
   },
   methods: {
     async isPresent() {
-
       await this.$axios.put(
         `http://localhost:3000/reservation-course/present/${this.id}/${this.courseId}`
       )
       this.$router.push({
         name: 'yourcourses',
+      })
+    },
+
+    mailStudent() {
+      const userId = this.id
+      const courseId = this.courseId
+      this.$router.push({
+        name: 'contactstudent',
+        params: { userId, courseId },
+        component: 'Student',
       })
     },
   },

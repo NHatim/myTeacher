@@ -101,7 +101,7 @@ export class UsersService {
   }
 
   async contactTeacher(body: any) {
-    const { email, message, subject, courseId, completeName } = body;
+    const { message, subject, courseId, completeName } = body;
 
     const authorEmail = await this.prisma.course.findFirst({
       where: { id: courseId },
@@ -114,6 +114,41 @@ export class UsersService {
       subject: subject,
       html: `Ce message vous a été transmis le <strong>${date}</strong> par l'étudiant <strong>${completeName}</strong><br/>
       ${message}`,
+    });
+  }
+  async contactStudent(body: any) {
+    const { email, message, subject, courseId, completeName } = body;
+
+    const course = await this.prisma.course.findFirst({
+      where: { id: courseId },
+      include: { author: true },
+    });
+    const date = new Date();
+    await this.mailService.sendMail({
+      to: email,
+      from: process.env.MAIL_USERNAME,
+      subject: subject,
+      html: `Ce message vous a été transmis le <strong>${date}</strong> par le professeur <strong>${course.author.completeName}</strong><br/>
+      pour le cours de ${course.title} <br/>
+      ${message}`,
+    });
+  }
+
+  async contactStudents(body: any) {
+    const { message, subject, courseId, completeName } = body;
+    const students = await this.prisma.reservationCourse.findMany({
+      where: { courseId: courseId },
+      include: { user: true },
+    });
+    const date = new Date();
+    students.forEach(async (student) => {
+      await this.mailService.sendMail({
+        to: student.user.email,
+        from: process.env.MAIL_USERNAME,
+        subject: subject,
+        html: `Ce message vous a été transmis le <strong>${date}</strong> par le professeur <strong>${completeName}</strong><br/>
+      ${message}`,
+      });
     });
   }
 }

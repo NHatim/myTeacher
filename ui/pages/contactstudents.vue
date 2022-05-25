@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-card-title>
-      Formulaire de contact avec l'enseignant
+      Formulaire de contact avec tout les étudiants
     </v-card-title>
     <v-card-subtitle>
-      Vous pouvez contacter l'enseignant en remplissant le formulaire ci-dessous
+      Vous pouvez contacter les étudiants en remplissant le formulaire ci-dessous
     </v-card-subtitle>
 
           <v-col cols="12" md="4">
@@ -42,6 +42,7 @@ export default{
       completeName: '',
       email:'',
       message:'',
+      userId : this.$router.currentRoute.params.userId,
       courseId : this.$router.currentRoute.params.courseId,
     }
   },
@@ -51,21 +52,15 @@ export default{
         Authorization: 'Bearer ' + localStorage.getItem('auth.token'),
       },
     })
-    this.completeName = await this.$axios.$get('/users/user/' + localStorage.getItem('auth.profile').split(',')[0].split(':')[1], {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('auth.token'),
-      },
-    })
   },
 
   methods: {
     async sendMessage(){
-      const response = await this.$axios.$post('/users/contact-teacher', {
+      await this.$axios.$post('/users/contact-students', {
         email: this.email,
         subject: this.subject,
         message: this.message,
         courseId: this.courseId,
-        completeName: this.completeName,
       }, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('auth.token'),

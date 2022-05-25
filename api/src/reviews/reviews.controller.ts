@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guards';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -33,6 +35,7 @@ export class ReviewsController {
     return this.reviewsService.findByCourseAndUser(+courseId, +userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/:courseId')
   findByCourse(@Param('courseId') courseId: string) {
     return this.reviewsService.findByCourse(+courseId);

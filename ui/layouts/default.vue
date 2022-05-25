@@ -134,7 +134,7 @@ export default {
         },
         {
           icon: 'mdi-library',
-          title: 'Cours',
+          title: 'Cours disponibles',
           to: '/courses',
         },
         {

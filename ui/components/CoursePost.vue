@@ -44,20 +44,21 @@
         <v-divider class="mx-4"></v-divider>
         <v-card-text>
           <v-row align="center" class="mx-0">
-            <v-rating
-              :value="rating"
-              color="amber"
-              dense
-              half-increments
-              readonly
-              size="14"
-            ></v-rating>
+            <v-btn @click="seeComment">
+              <v-rating
+                :value="rating"
+                color="amber"
+                dense
+                half-increments
+                readonly
+                size="14"
+              ></v-rating>
 
-            <div class="grey--text ms-4">
-              {{ rating }} ({{ numberOfRatings }})
-            </div>
+              <div class="grey--text ms-4">
+                {{ rating }} ({{ numberOfRatings }})
+              </div>
+            </v-btn>
           </v-row>
-
           <div class="my-4 text-subtitle-1">
             € {{ price }} • {{ categoryName }}
           </div>
@@ -113,15 +114,23 @@
             text
             @click="seeStudentRegistered"
           >
-           Voir Etudiant(s)
+            Voir Etudiant(s)
           </v-btn>
-                    <v-btn
+          <v-btn
             v-if="contactTeacher"
             color="deep-purple lighten-2"
             text
             @click="contactTeacherEmail"
           >
-           Contacter l'enseignant(e)
+            Contacter l'enseignant(e)
+          </v-btn>
+          <v-btn
+            v-if="refund"
+            color="deep-purple lighten-2"
+            text
+            @click="refundContact"
+          >
+            Demande de remboursement
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -228,6 +237,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    refund: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -239,12 +252,12 @@ export default {
     }
   },
   mounted() {
-    setTimeout(this.calculateRating, 1000);
+    setTimeout(this.calculateRating, 1000)
   },
   methods: {
     reserve() {
-      if(!localStorage.getItem('auth.profile')){
-       return alert("Vous devez vous inscrire pour réserver un cours");
+      if (!localStorage.getItem('auth.profile')) {
+        return alert('Vous devez vous inscrire pour réserver un cours')
       }
       const courseId = this.id
       this.$router.push({
@@ -324,9 +337,26 @@ export default {
       })
 
       this.rating = this.totalRating / this.ratingTab.length
-      if(this.ratingTab.length === 0) {
+      if (this.ratingTab.length === 0) {
         this.rating = 0
       }
+    },
+    refundContact() {
+      const courseId = this.id
+      this.$router.push({
+        name: 'refundcontact',
+        params: { courseId },
+        component: 'CoursePost',
+      })
+    },
+
+    seeComment(){
+      const courseId = this.id
+      this.$router.push({
+        name: 'comments',
+        params: { courseId },
+        component: 'CoursePost',
+      })
     },
   },
 }

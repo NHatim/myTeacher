@@ -64,4 +64,16 @@ export class UsersController {
   async contactTeacher(@Body() body: any) {
     return this.usersService.contactTeacher(body);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/contact-student')
+  async contactStudent(@Body() body: any) {
+    return this.usersService.contactStudent(body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/contact-students')
+  async contactStudents(@Body() body: any) {
+    return this.usersService.contactStudents(body);
+  }
 }

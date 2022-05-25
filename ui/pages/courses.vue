@@ -23,6 +23,7 @@
           :v-model="priceMin"
           :value="priceMin"
           prefix="€"
+          @input="setPriceMin"
         ></v-text-field>
       </v-col>
       <v-col cols="8" md="1">
@@ -31,6 +32,7 @@
           :v-model="priceMax"
           :value="priceMax"
           prefix="€"
+          @input="setPriceMax"
         ></v-text-field>
       </v-col>
 
@@ -78,37 +80,72 @@ export default {
     }
   },
   mounted() {
+    this.categories[0] = { text: 'Toutes les catégories', value: 0 }
+    this.teachers[0] = { text: 'Tous les enseignants', value: 0 }
     this.getCourses()
     this.getCategories()
     this.getTeachers()
   },
   methods: {
-    filter(){
-      if(this.categoryId === 0 && this.teacherId === 0 && this.priceMin === 0 && this.priceMax === 0){
+    filter() {
+      if (
+        this.categoryId === 0 &&
+        this.teacherId === 0 &&
+        this.priceMin === 0 &&
+        this.priceMax === 0
+      ) {
         this.coursesFiltered = this.courses
+      } else if (this.categoryId === 0 && this.teacherId === 0) {
+        this.coursesFiltered = this.courses.filter(
+          (course) =>
+            course.price >= this.priceMin && course.price <= this.priceMax
+        )
+      } else if (
+        this.categoryId === 0 &&
+        this.priceMin === 0 &&
+        this.priceMax === 0
+      ) {
+        this.coursesFiltered = this.courses.filter(
+          (course) => course.author.id === this.teacherId
+        )
+      } else if (
+        this.teacherId === 0 &&
+        this.priceMin === 0 &&
+        this.priceMax === 0
+      ) {
+        this.coursesFiltered = this.courses.filter(
+          (course) => course.category.id === this.categoryId
+        )
+      } else if (this.categoryId === 0) {
+        this.coursesFiltered = this.courses.filter(
+          (course) =>
+            course.price >= this.priceMin &&
+            course.price <= this.priceMax &&
+            course.teacher.id === this.teacherId
+        )
+      } else if (this.teacherId === 0) {
+        this.coursesFiltered = this.courses.filter(
+          (course) =>
+            course.price >= this.priceMin &&
+            course.price <= this.priceMax &&
+            course.category.id === this.categoryId
+        )
+      } else if (this.priceMin === 0 && this.priceMax === 0) {
+        this.coursesFiltered = this.courses.filter(
+          (course) =>
+            course.category.id === this.categoryId &&
+            course.author.id === this.teacherId
+        )
+      } else {
+        this.coursesFiltered = this.courses.filter(
+          (course) =>
+            course.price >= this.priceMin &&
+            course.price <= this.priceMax &&
+            course.category.id === this.categoryId &&
+            course.author.id === this.teacherId
+        )
       }
-      else if(this.categoryId === 0 && this.teacherId === 0){
-        this.coursesFiltered = this.courses.filter(course => course.price >= this.priceMin && course.price <= this.priceMax)
-      }
-      else if(this.categoryId === 0 && this.priceMin == 0 && this.priceMax === 0){
-        this.coursesFiltered = this.courses.filter(course => course.author.id === this.teacherId)
-      }
-      else if(this.teacherId === 0 && this.priceMin === 0 && this.priceMax === 0){
-        this.coursesFiltered = this.courses.filter(course => course.category.id === this.categoryId)
-      }
-      else if(this.categoryId === 0){
-        this.coursesFiltered = this.courses.filter(course => course.price >= this.priceMin && course.price <= this.priceMax && course.teacher.id === this.teacherId)
-      }
-      else if(this.teacherId === 0){
-        this.coursesFiltered = this.courses.filter(course => course.price >= this.priceMin && course.price <= this.priceMax && course.category.id === this.categoryId)
-      }
-      else if(this.priceMin === 0 && this.priceMax === 0){
-        console.log("ici")
-        this.coursesFiltered = this.courses.filter(course => course.category.id === this.categoryId && course.author.id === this.teacherId)
-      }
-      else{
-        this.coursesFiltered = this.courses.filter(course => course.price >= this.priceMin && course.price <= this.priceMax && course.category.id === this.categoryId && course.author.id === this.teacherId)
-      }
+      console.log(this.priceMax, this.priceMin, this.categoryId, this.teacherId)
     },
     getCourses() {
       this.$axios
@@ -158,20 +195,17 @@ export default {
               value: teacher.id,
             })
           })
-          console.log(this.teachers)
         })
         .catch((error) => {
           console.log(error)
         })
     },
-    // setCoursesTeacher() {
-    //   if (this.teacherId == 'Tous les enseignants') {
-    //     return (this.coursesFiltered = this.courses)
-    //   }
-    //   this.coursesFiltered = this.courses.filter((course) => {
-    //     return course.author.id === this.teacherId
-    //   })
-    // },
+    setPriceMin(priceMin) {
+      this.priceMin = Number(priceMin)
+    },
+    setPriceMax(priceMax) {
+      this.priceMax = Number(priceMax)
+    },
   },
 }
 </script>

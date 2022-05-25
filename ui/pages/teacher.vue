@@ -205,6 +205,9 @@ export default {
   methods: {
     setCategory(category) {
       this.categoryId = category
+      if(category === 'other') {
+        this.$router.push('createcategory')
+      }
     },
 
     async saveCourse() {
@@ -262,6 +265,10 @@ export default {
           text: category.name,
           value: category.id,
         })
+      })
+      this.categories.push({
+        text: 'Créer une nouvelle catégorie',
+        value: 'other',
       })
     },
     async getUserAdress() {

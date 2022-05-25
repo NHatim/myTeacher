@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-card-title>
-      Formulaire de contact avec l'enseignant
+      Formulaire de contact avec l'étudiant
     </v-card-title>
     <v-card-subtitle>
-      Vous pouvez contacter l'enseignant en remplissant le formulaire ci-dessous
+      Vous pouvez contacter l'étudiant en remplissant le formulaire ci-dessous
     </v-card-subtitle>
 
           <v-col cols="12" md="4">
@@ -22,6 +22,7 @@
               v-model="message"
               label="Message"
               color="teal"
+              :value="message"
               :rules="[(v) => !!v || 'Veuillez entrer le message']"
               :maxlength="250"
               required
@@ -42,25 +43,29 @@ export default{
       completeName: '',
       email:'',
       message:'',
+      userId : this.$router.currentRoute.params.userId,
       courseId : this.$router.currentRoute.params.courseId,
     }
   },
   async mounted() {
-    this.email = await this.$axios.$get('/users/email/' + localStorage.getItem('auth.profile').split(',')[0].split(':')[1], {
+    console.log(this.courseId)
+    this.email = await this.$axios.$get('/users/email/' + this.userId, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('auth.token'),
       },
     })
-    this.completeName = await this.$axios.$get('/users/user/' + localStorage.getItem('auth.profile').split(',')[0].split(':')[1], {
+    this.completeName = await this.$axios.$get('/users/user/' + this.userId, {
       headers: {
         Authorization: 'Bearer ' + localStorage.getItem('auth.token'),
       },
     })
+
+    this.message = `Bonjour ${this.completeName},\n\n`
   },
 
   methods: {
     async sendMessage(){
-      const response = await this.$axios.$post('/users/contact-teacher', {
+       await this.$axios.$post('/users/contact-student', {
         email: this.email,
         subject: this.subject,
         message: this.message,
