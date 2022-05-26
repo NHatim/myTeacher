@@ -9,6 +9,7 @@ import {
   UseGuards,
   Query,
   Req,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,8 +21,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto, @Req() req: any) {
     return this.usersService.create(createUserDto);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get('/userid/:id')
+  findUserById(@Param('id') id: string) {
+    return this.usersService.findUserById(+id);
   }
 
   @Get('/findteachers')
@@ -29,6 +35,7 @@ export class UsersController {
     return this.usersService.findTeachers();
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -55,10 +62,6 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
-  }
   @UseGuards(JwtAuthGuard)
   @Post('/contact-teacher')
   async contactTeacher(@Body() body: any) {
@@ -76,4 +79,17 @@ export class UsersController {
   async contactStudents(@Body() body: any) {
     return this.usersService.contactStudents(body);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('/modify-role/:id')
+  async modifyRole(@Param('id') id: string, @Body() body: any) {
+    return this.usersService.modifyRole(+id, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:id')
+  async deleteUser(@Param('id') id: string) {
+    return this.usersService.deleteUser(+id);
+  }
+
 }

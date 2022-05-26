@@ -66,12 +66,22 @@
               required
             ></v-text-field>
           </v-col>
+                    <v-col cols="12" md="4">
+            <v-text-field
+              v-if="radios === 'TEACHER'"
+              v-model="iban"
+              :rules="rules.ibanRules"
+              label="code IBAN"
+              hint="BE68539007547034"
+              required
+            ></v-text-field>
+          </v-col>
           <v-col cols="12" md="4">
             <v-text-field
               v-model="address"
               :rules="[(v) => !!v || 'Veuillez entrer votre adresse']"
               label="Addresse, Ville, Code Postal"
-              hint="Exemple: Rue Gatti de Gamond 13, Uccle, 1180"
+              hint="Exemple: Rue Gatti de Gamond 13, Bruxelles, 1180"
               required
             ></v-text-field>
           </v-col>
@@ -131,6 +141,7 @@ export default {
       passwordConfirmation: '',
       phone: '',
       address: '',
+      iban: '',
       birthDay: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10)
@@ -142,6 +153,12 @@ export default {
       text: 'Vous avez réussi à vous enregistrer !',
       savingSuccessful: false,
       rules: {
+        ibanRules: [
+          (v) => !!v || 'Veuillez entrer votre compte IBAN',
+          (v) => /^[A-Z]{2}[0-9]{2}[A-Z0-9]{4}[0-9]{7}([A-Z0-9]?){0,16}$/i.test(
+            v
+          ) || 'Veuillez entrer un IBAN valide',
+        ],
         required: (value) => !!value || 'Ce champ est requis',
         min: (v) =>
           v.length >= 8 ||
@@ -167,6 +184,7 @@ export default {
         address: this.address,
         birthDay: this.birthDay.toString(),
         interests: this.interests,
+        IBAN: this.iban,
         role: this.radios,
       }
       if(!user.completeName || !user.email || !user.password || !user.phone || !user.address || !user.birthDay || !user.role) {

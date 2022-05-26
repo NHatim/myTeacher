@@ -78,6 +78,14 @@ export class ReservationCourseService {
       },
     });
   }
+  findEveryReservationCourse() {
+    return this.prisma.reservationCourse.findMany({
+      include: {
+        user: true,
+        course: true,
+      },
+    });
+  }
 
   findAll(userId: number) {
     return this.prisma.reservationCourse.findMany({
@@ -121,6 +129,41 @@ export class ReservationCourseService {
       where: {
         courseId: Number(courseId),
         userId: Number(userId),
+      },
+    });
+  }
+  async findStudent(userId: number) {
+    const studentCourses = [];
+    const reservationCourses = await this.prisma.reservationCourse.findMany({
+      where: {
+        userId: Number(userId),
+      },
+      include: {
+        course: true,
+      },
+    });
+
+    for (const reservation of reservationCourses) {
+      const course = await this.prisma.course.findFirst({
+        where: {
+          id: reservation.course.id,
+        },
+        include: {
+          author: true,
+          reviews: true,
+        },
+      });
+      studentCourses.push(course);
+    }
+    return studentCourses;
+  }
+  pay(id: number) {
+    return this.prisma.reservationCourse.update({
+      where: {
+        id: Number(id),
+      },
+      data: {
+        paidbyadmin: true,
       },
     });
   }

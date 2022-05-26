@@ -1,5 +1,4 @@
 <template>
-
   <v-app dark>
     <script src="https://js.stripe.com/v3/"></script>
     <v-navigation-drawer
@@ -64,12 +63,70 @@
             <v-list-item-title v-text="items[5].title" />
           </v-list-item-content>
         </v-list-item>
-        <v-list-item v-if="user.role === 'STUDENT'" router exact to="/studentcourses">
+        <v-list-item
+          v-if="user.role === 'STUDENT'"
+          router
+          exact
+          to="/studentcourses"
+        >
           <v-list-item-action>
             <v-icon>{{ items[6].icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title v-text="items[6].title" />
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+          v-if="user.role === 'ADMIN'"
+          router
+          exact
+          to="/admin/adminusers"
+        >
+          <v-list-item-action>
+            <v-icon>{{ items[9].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[9].title" />
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-if="user.role === 'ADMIN'"
+          router
+          exact
+          to="/admin/admincourses"
+        >
+          <v-list-item-action>
+            <v-icon>{{ items[10].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[10].title" />
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-if="user.role === 'ADMIN'"
+          router
+          exact
+          to="/admin/adminrefunds"
+        >
+          <v-list-item-action>
+            <v-icon>{{ items[8].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[8].title" />
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-if="user.role === 'ADMIN'"
+          router
+          exact
+          to="/admin/adminpayments"
+        >
+          <v-list-item-action>
+            <v-icon>{{ items[7].icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="items[7].title" />
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -142,6 +199,26 @@ export default {
           title: 'Vos Cours Souscrit',
           to: '/studentcourses',
         },
+        {
+          icon: 'mdi-cash-fast',
+          title: 'Admin paiements',
+          to: '/adminpayments',
+        },
+        {
+          icon: 'mdi-credit-card-refund',
+          title: 'Admin remboursements',
+          to: '/adminrefunds',
+        },
+        {
+          icon: 'mdi-account',
+          title: 'Admin utilisateurs',
+          to: '/adminusers',
+        },
+        {
+          icon: 'mdi-cast-education',
+          title: 'Admin cours',
+          to: '/admincourses',
+        },
       ],
       user: {
         firstName: '',
@@ -149,7 +226,7 @@ export default {
         email: '',
         role: '',
       },
-      connected : false,
+      connected: false,
       miniVariant: false,
       right: true,
       rightDrawer: false,
@@ -158,7 +235,8 @@ export default {
   },
   mounted() {
     if (this.$auth.$storage.getUniversal('profile')) {
-      this.user.lastName = this.$auth.$storage.getUniversal('profile').completeName
+      this.user.lastName =
+        this.$auth.$storage.getUniversal('profile').completeName
       this.user.email = this.$auth.$storage.getUniversal('profile').email
       this.user.role = this.$auth.$storage.getUniversal('profile').role
       this.connected = true

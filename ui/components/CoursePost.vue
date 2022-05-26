@@ -61,6 +61,14 @@
           </v-row>
           <div class="my-4 text-subtitle-1">
             € {{ price }} • {{ categoryName }}
+                      <v-btn
+            v-if="refund"
+            color="deep-purple lighten-2"
+            text
+            @click="refundContact"
+          >
+            Demande de remboursement
+          </v-btn>
           </div>
 
           <div>
@@ -124,14 +132,7 @@
           >
             Contacter l'enseignant(e)
           </v-btn>
-          <v-btn
-            v-if="refund"
-            color="deep-purple lighten-2"
-            text
-            @click="refundContact"
-          >
-            Demande de remboursement
-          </v-btn>
+
         </v-card-actions>
       </v-card>
     </v-row>
@@ -270,13 +271,11 @@ export default {
     async deleteCourse() {
       const courseId = this.id
       try {
-        const response = await this.$axios.delete(`/courses/${courseId}`)
-        if (response.data.success) {
+       await this.$axios.delete(`/courses/${courseId}`)
           this.$router.push({
             name: 'courses',
             component: 'CoursePost',
           })
-        }
       } catch {
         this.alert = true
       }

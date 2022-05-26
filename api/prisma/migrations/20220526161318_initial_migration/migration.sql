@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('TEACHER', 'STUDENT');
+CREATE TYPE "Role" AS ENUM ('TEACHER', 'STUDENT', 'ADMIN');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -10,6 +10,7 @@ CREATE TABLE "User" (
     "birthDay" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
+    "IBAN" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "interests" TEXT[],
@@ -54,6 +55,7 @@ CREATE TABLE "ReservationCourse" (
     "attended" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "paidbyadmin" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "ReservationCourse_pkey" PRIMARY KEY ("id")
 );
@@ -69,6 +71,18 @@ CREATE TABLE "Review" (
     "rating" INTEGER NOT NULL,
 
     CONSTRAINT "Review_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Refunds" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "courseId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "reason" TEXT NOT NULL,
+
+    CONSTRAINT "Refunds_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -97,3 +111,9 @@ ALTER TABLE "Review" ADD CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") 
 
 -- AddForeignKey
 ALTER TABLE "Review" ADD CONSTRAINT "Review_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Refunds" ADD CONSTRAINT "Refunds_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Refunds" ADD CONSTRAINT "Refunds_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

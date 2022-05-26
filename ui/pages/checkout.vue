@@ -80,7 +80,7 @@ export default {
 
     this.course = course.data
                     const reviews = await this.$axios.get(
-              '/reviews/' + this.course.id
+              '/reviews/' + this.course.id, { headers : { Authorization: 'Bearer ' + localStorage.getItem('auth.token') } }
             )
     this.course.reviews = reviews.data
     initialize()

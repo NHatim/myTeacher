@@ -32,4 +32,7 @@ export class CreateUserDto {
 
   @IsString()
   interests: string[];
+
+  @IsString()
+  IBAN: string;
 }

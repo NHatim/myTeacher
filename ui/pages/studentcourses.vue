@@ -17,6 +17,7 @@
         :see-places="false"
         :can-rate="true"
         :image="getImage(course.id)"
+        :refund="true"
         class="col-md-4"
       />
     </v-row>
@@ -32,9 +33,7 @@ export default {
   },
   mounted() {
     this.getCourses()
-    console.log(
-      localStorage.getItem('auth.profile').split(',')[0].split(':')[1]
-    )
+    console.log(this.courses)
   },
 
   methods: {
@@ -64,9 +63,12 @@ export default {
               }
             )
             const reviews = await this.$axios.get(
-              '/reviews/' + reservation.course.id
+              '/reviews/' + reservation.course.id, {
+                headers: {
+                  Authorization: 'Bearer ' + localStorage.getItem('auth.token'),
+                },
+              }
             )
-            console.log(reviews)
             reservation.course.author = author.data
             reservation.course.reviews = reviews.data
             this.courses.push(reservation.course)

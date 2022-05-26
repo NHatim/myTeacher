@@ -46,7 +46,7 @@
               v-model="address"
               :rules="[(v) => !!v || 'Veuillez entrer le lieu de votre cours']"
               label="Lieu"
-              hint="Exemple: Rue Gatti de Gamond 13, Uccle, 1180"
+              hint="Exemple: Rue Gatti de Gamond 13, Bruxelles, 1180"
               :value="address"
               required
             ></v-text-field>
@@ -178,7 +178,7 @@ export default {
           /^[+-]?([0-9]*[.])?[0-9]+$/.test(v) ||
           'Veuillez entrer un prix valide',
         (v) => (v && v > 0) || 'Veuillez entrer un prix supérieur à 0',
-        (v) => (v && v <= 50) || 'Veuillez entrer un prix inférieur à 50',
+        (v) => (v && v <= 500) || 'Veuillez entrer un prix inférieur à 500',
       ],
       components: [DateCourse],
       address: '',

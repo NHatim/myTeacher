@@ -18,15 +18,59 @@
         {{ present }}
       </v-card-subtitle>
       <v-spacer></v-spacer>
+      <v-card-subtitle
+        v-if="seeRole"
+        color="blue lighten-2"
+        text
+        @click="viewCourse"
+      >
+        {{ role }}
+      </v-card-subtitle>
       <v-card-actions>
-        <v-btn color="orange lighten-2" text @click="isPresent">
+        <v-btn
+          v-if="seePresence"
+          color="orange lighten-2"
+          text
+          @click="isPresent"
+        >
           Rajouter une présence
         </v-btn>
         <v-row>
-          <v-btn color="blue lighten-2" text @click="mailStudent">
+          <v-btn
+            v-if="seePresence"
+            color="blue lighten-2"
+            text
+            @click="mailStudent"
+          >
             Communiquer avec les étudiants
-          </v-btn></v-row
-        >
+          </v-btn>
+          <v-btn
+            v-if="seeCourse"
+            color="blue lighten-2"
+            text
+            @click="viewCourse"
+          >
+            Voir les cours
+          </v-btn>
+
+          <v-btn
+            v-if="canModify"
+            color="blue lighten-2"
+            text
+            @click="modifyRole"
+          >
+            Modifier le rôle
+          </v-btn>
+
+          <v-btn
+            v-if="canModify"
+            color="red lighten-2"
+            text
+            @click="deleteUser"
+          >
+            Supprimer l'utilisateur
+          </v-btn>
+        </v-row>
       </v-card-actions>
     </v-card>
   </div>
@@ -51,9 +95,29 @@ export default {
       type: String,
       default: '',
     },
+    role: {
+      type: String,
+      default: '',
+    },
     courseId: {
       type: Number,
       default: 0,
+    },
+    seeRole: {
+      type: Boolean,
+      default: false,
+    },
+    seeCourse: {
+      type: Boolean,
+      default: false,
+    },
+    seePresence: {
+      type: Boolean,
+      default: true,
+    },
+    canModify: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -80,6 +144,47 @@ export default {
         params: { userId, courseId },
         component: 'Student',
       })
+    },
+
+    viewCourse() {
+      const userId = this.id
+      this.$router.push({
+        name: `seecourse`,
+        params: { userId },
+      })
+    },
+
+    modifyRole() {
+      const userId = this.id
+      this.$router.push({
+        name: 'modifyrole',
+        params: { userId },
+      })
+    },
+
+    async deleteUser() {
+      const userId = this.id
+      try {
+        if (
+          confirm(
+            `Êtes-vous sûr de vouloir supprimer l'utilisateur ${this.completeName} ?`
+          )
+        ) {
+          await this.$axios.delete(
+            `http://localhost:3000/users/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('auth.token')}`,
+              },
+            }
+          )
+          this.$router.push({
+            path: '/admin/adminusers',
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
     },
   },
 }

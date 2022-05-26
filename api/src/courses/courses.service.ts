@@ -102,16 +102,8 @@ export class CoursesService {
         dateHour: createCourseDto.dateHour,
       },
     });
-    await this.stripe.products.create({
-      name: createdCourse.title,
-      description: createdCourse.description,
-      id: createdCourse.id.toString(),
-    });
-    return this.stripe.prices.create({
-      product: createdCourse.id.toString(),
-      unit_amount: Number(Math.round(createdCourse.price * 100)),
-      currency: 'eur',
-    });
+
+    return createdCourse;
   }
 
   async findAll() {
@@ -168,7 +160,6 @@ export class CoursesService {
       },
     });
   }
-
   async remove(id: number) {
     const reservationCourse = await this.prisma.reservationCourse.findFirst({
       where: {

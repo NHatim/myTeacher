@@ -1,15 +1,18 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as bcrypt from 'bcrypt';
+import { STRIPE_CLIENT } from 'src/stripe/constants';
+import Stripe from 'stripe';
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailerService,
+    @Inject(STRIPE_CLIENT) private stripe: Stripe,
   ) {}
   async create(createUserDto: CreateUserDto) {
     {
@@ -25,6 +28,7 @@ export class UsersService {
       await this.prisma.user.create({
         data: {
           ...createUserDto,
+          IBAN: createUserDto.IBAN,
           password: hashedPassword,
         },
       });
@@ -149,6 +153,47 @@ export class UsersService {
         html: `Ce message vous a été transmis le <strong>${date}</strong> par le professeur <strong>${completeName}</strong><br/>
       ${message}`,
       });
+    });
+  }
+
+  modifyRole(id: any, role: any) {
+    const enumRole = {
+      TEACHER: 'TEACHER',
+      STUDENT: 'STUDENT',
+      ADMIN: 'ADMIN',
+    };
+
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        role: enumRole[role.role],
+      },
+    });
+  }
+  async deleteUser(id: number) {
+    const coursesUser = await this.prisma.course.findMany({
+      where: { authorId: id },
+    });
+    console.log(coursesUser);
+    for (const course of coursesUser) {
+      await this.prisma.reservationCourse.deleteMany({
+        where: { courseId: course.id },
+      });
+      await this.prisma.course.delete({
+        where: { id: course.id },
+      });
+    }
+    await this.prisma.reservationCourse.deleteMany({
+      where: { userId: id },
+    });
+    return this.prisma.user.delete({
+      where: { id },
+    });
+  }
+
+  findUserById(id: number) {
+    return this.prisma.user.findUnique({
+      where: { id },
     });
   }
 }
